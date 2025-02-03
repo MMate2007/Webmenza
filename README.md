@@ -1,0 +1,1 @@
+Ez egy iskolai szoftver a diákok étkezési igénylésének kezelésére.
