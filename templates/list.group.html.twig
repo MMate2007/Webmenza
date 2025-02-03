@@ -1,0 +1,37 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Csoportok - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Csoportok
+{% endblock headtitle %}
+
+{% block content %}
+<div class="d-flex justify-content-sm-between flex-wrap">
+<div><a href="add.group.php" class="btn btn-primary" role="button"><i class="bi bi-folder-plus"></i> Csoport létrehozása</a></div>
+<form action="#" method="get" role="search" class="d-flex">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Írja ide a keresett csoportot..." aria-label="Kulcsszó" aria-describedby="searchbutton" name="search" value="{{ search|escape }}">
+        <button class="btn btn-outline-primary" type="submit" id="searchbutton"><i class="bi bi-search"></i> Keresés</button>
+    </div>
+</form>
+</div>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Név</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+            <tr>
+                <td><a href="view.group.php?id={{ group[0] }}">{{ group[1] }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

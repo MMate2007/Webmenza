@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Menü választása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Menü választása
+{% endblock headtitle %}
+
+{% block content %}
+<form method="post" action="#">
+    <div class="mb-3">
+        <label for="date" class="form-label">Nap:</label>
+        <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" readonly>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Menü:</label>
+    </div>
+    <div class="mb-3">
+        {% if menu != null %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="meal" id="meal-null" value="null" {% if id == null %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
+            <label class="form-check-label" for="meal-null">
+              Erre a napra nem igénylek étkeztetést.
+            </label>
+        </div>
+        {% endif %}
+        {% for meal in menu %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="meal" id="meal-{{ meal.id }}" value="{{ meal.id }}" {% if meal.id == id %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
+            <label class="form-check-label" for="meal-{{ meal.id }}">
+              {{ meal.description|nl2br }}
+            </label>
+        </div>
+        {% else %}
+        <p>Erre a napra nem igényelhető étkeztetés.</p>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary" {% if fillable == false %}disabled{% endif %}><i class="bi bi-floppy"></i> Mentés</button>
+</form>
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block customstyle %}
+body { background-color: #dfdfdf; }
+.formcontainer { 
+	background-color: white;
+	box-shadow: 1px 1px 50px #7d7d7d;
+}
+main { height: 85% !important; }
+{% endblock %}
+
+{% block title %}
+    Adminisztrátori bejelentkezés - Webmenza
+{% endblock title %}
+
+{% block content %}
+<div class="h-100 d-flex align-items-center justify-content-center">
+	<div class="formcontainer" style="border-radius: 10px; padding: 30px;">
+		<h1>Bejelentkezés</h1>
+		<form method="post" action="login.php">
+			<div class="input-group mb-3">
+				<span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+				<input type="text" class="form-control" name="name" required placeholder="Felhasználónév" autocomplete="username webauthn">
+			</div>
+			<div class="input-group mb-3">
+				<span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+				<input type="password" name="password" id="password" class="form-control" required placeholder="Jelszó" autocomplete="current-password">
+			</div>
+			<button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Bejelentkezés</button>
+		</form>		
+	</div>
+</div>
+{% endblock content %}

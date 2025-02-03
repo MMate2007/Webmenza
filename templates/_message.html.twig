@@ -1,0 +1,4 @@
+<div class="alert alert-{{ message.type.value|escape }} {{ message.dismissible ? "alert-dismissible" }} fade show" role="alert">
+    {{ message.content }}
+    {% if message.dismissible %}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Bezárás"></button>{% endif %}
+</div>

@@ -1,0 +1,40 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Igénylések exportálása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Igénylések exportálása
+{% endblock headtitle %}
+
+{% block content %}
+<form method="post" action="#">
+    <div class="mb-3 row">
+        <label for="from" class="form-label col-sm-2">Első nap:</label>
+        <input type="date" name="from" id="from" class="form-control col" required value="{{ from|escape }}">
+    </div>
+    <div class="mb-3 row">
+        <label for="to" class="form-label col-sm-2">Jelszó:</label>
+        <input type="date" name="to" id="to" class="form-control col" required value="{{ to|escape }}">
+    </div>
+    <div class="mb-3 row">
+        <label for="group" class="form-label col-sm-2">Csoport:</label>
+        <select name="group" id="group" class="form-select col">
+            {% for group in groups %}
+                <option value="{{ group['id'] }}" {% if groupId == group['id'] %} selected {% endif %}>{{ group['name']|escape }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3 row">
+        <label for="format" class="form-label col-sm-2">Fájlformátum:</label>
+        <select name="format" id="format" class="form-select col">
+            <option value="Xlsx">.xlsx</option>
+            <option value="Xls">.xls</option>
+            <option value="Ods">.ods</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Exportálás</button>
+</form>
+
+{% endblock content %}

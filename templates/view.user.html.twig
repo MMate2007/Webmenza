@@ -1,0 +1,33 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    {{ user[1]|e }} - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    {{ user[1]|e }} {% if user[2] %}(<a href="view.group.php?id={{ user[3] }}">{{ user[2] }}</a>){% endif %}
+{% endblock headtitle %}
+
+{% block content %}
+<a href="edit.user.php?id={{ user[0] }}" class="btn btn-primary" role="button"><i class="bi bi-person-fill-gear"></i> Szerkesztés</a>
+<a href="delete.user.php?id={{ user[0] }}" class="btn btn-danger" role="button"><i class="bi bi-person-x-fill"></i> Felhasználó törlése</a>
+<h2>Étkezések</h2>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Dátum</th>
+                <th>Menü</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for choice in choices %}
+            <tr>
+                <td>{{ choice.date|date("Y. m. d.") }}</td>
+                <td>{{ choice.menuId|menuletter }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

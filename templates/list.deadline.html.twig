@@ -1,0 +1,39 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Határidők - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Határidők
+{% endblock headtitle %}
+
+{% block content %}
+<div class="d-flex justify-content-sm-between flex-wrap">
+    <div><a href="add.deadline.php" class="btn btn-primary" role="button"><i class="bi bi-calendar-plus"></i> Határidő hozzáadása</a></div>
+</div>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Kezdete</th>
+                <th>Vége</th>
+                <th>Határidő eleje</th>
+                <th>Határidő vége</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for deadline in deadlines %}
+            <tr>
+                <td>{{ deadline.from|date("Y. m. d.") }}</td>
+                <td>{{ deadline.to|date("Y. m. d.") }}</td>
+                <td>{{ deadline.start|date("Y. m. d.") }}</td>
+                <td>{{ deadline.end|date("Y. m. d.") }}</td>
+                <td><a href="delete.deadline.php?id={{ deadline.id|e }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

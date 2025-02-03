@@ -1,0 +1,56 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    {{ groupname|e }} csoport - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    {{ groupname|e }} csoport
+{% endblock headtitle %}
+
+{% block content %}
+<div class="d-flex justify-content-sm-between flex-wrap">
+    <div>
+        <a href="edit.group.php?id={{ groupId }}" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i> Szerkesztés</a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-trash3"></i> Törlés
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="delete.group.php?id={{ groupId }}"><i class="bi bi-trash3"></i> Csoport törlése és felhasználók megtartása</a></li>
+              <li><a class="dropdown-item" href="delete.group.php?onlyusers=1&id={{ groupId }}"><i class="bi bi-person-x-fill"></i> Csoport felhasználóinak törlése</a></li>
+              <li><a class="dropdown-item" href="delete.group.php?withusers=1&id={{ groupId }}"><i class="bi bi-person-x"></i> Csoport és felhasználói törlése</a></li>
+            </ul>
+        </div>
+        <a href="migrate.group.php?from={{ groupId }}" class="btn btn-warning" role="button"><i class="bi bi-person-fill-up"></i> Csoport költöztetése</a>
+    </div>
+    <form action="#" method="get" role="search" class="d-flex">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Írja ide a keresett nevet..." aria-label="Kulcsszó" aria-describedby="searchbutton" name="search" value="{{ search|escape }}">
+            <input type="hidden" name="id" value="{{ groupId|e }}">
+            <button class="btn btn-outline-primary" type="submit" id="searchbutton"><i class="bi bi-search"></i> Keresés</button>
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 10px;"></th>
+                <th>Név</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><input type="checkbox" name="users[]" id="user-{{ user[0] }}" value="{{ user[0] }}" class="form-check-input"></td>
+                <td><a href="view.user.php?id={{ user[0] }}">{{ user[1] }}</a></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

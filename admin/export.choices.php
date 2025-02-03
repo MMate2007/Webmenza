@@ -1,0 +1,157 @@
+<?php
+require_once "../config.php";
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
+authUser(1);
+$mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
+$mysql->query("SET NAMES utf8");
+if (isset($_POST["from"])) {
+    $stmt = $mysql->prepare("SELECT `name` FROM `groups` WHERE `id` = ?");
+    $stmt->bind_param("i", $_POST["group"]);
+    $stmt->execute();
+    $groupName = $stmt->get_result()->fetch_row()[0];
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $spreadsheet->getProperties()->setCreator('Webmenza - '.$_SESSION["name"])
+        ->setLastModifiedBy('Webmenza - '.$_SESSION["name"])
+        ->setTitle($groupName." menza igénylése ".date_format(date_create($_POST["from"]), "Y. m. d.")." - ".date_format(date_create($_POST["to"]), "Y. m. d."));
+    $sheet = $spreadsheet->setActiveSheetIndex(0);
+    $sheet->setTitle($groupName);
+    $sheet->getDefaultColumnDimension()->setWidth(0.70, "cm");
+    $stmt = $mysql->prepare("SELECT DISTINCT `date` FROM `menu` WHERE `date` BETWEEN ? AND ?");
+    $stmt->execute([$_POST["from"], $_POST["to"]]);
+    $result = $stmt->get_result();
+    $weekdays = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
+    while ($row = $result->fetch_array()) {
+        $date = date_create($row[0]);
+        $d[] = $row[0];
+        $dates[] = date_format($date, "j");
+        $days[] = $weekdays[date_format($date, "N")-1];
+    }
+    $sheet->fromArray([$dates, $days], startCell: "C1");
+    $sheet->setCellValue("A2", "#");
+    $sheet->setCellValue("B2", "Név");
+    $stmt = $mysql->prepare("SELECT `id`, `name` FROM `users` WHERE `registered` = 1 AND `groupId` = ? ORDER BY `name`");
+    $stmt->bind_param("i", $_POST["group"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $counter = 1;
+    $s = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `userId` = ? AND `date` = ?");
+    $s->bind_param("is", $uid, $day);
+    while ($row = $result->fetch_array()) {
+        $uid = $row[0];
+        $entry = [$counter, $row[1]];
+        foreach ($d as $day) {
+            $s->execute();
+            $res = $s->get_result();
+            $r = $res->fetch_row();
+            if ($r !== null) {
+                if ($r[0] === null) {
+                    $menu = "X";
+                } else {
+                    $menu = $menuletters[$r[0]-1];
+                }
+                $entry[] = $menu;
+            } else {
+                $entry[] = null;
+            }
+        }
+        $users[] = $entry;
+        $counter++;
+    }
+    $sheet->fromArray($users, startCell: "A3");
+    $headStyles = [
+        "alignment" => [
+            "horizontal" => Alignment::HORIZONTAL_CENTER,
+            "vertical" => Alignment::VERTICAL_CENTER
+        ],
+        "borders" => [
+            "allBorders" => [
+                "borderStyle" => Border::BORDER_THICK
+            ]
+        ],
+        "font" => [
+            "bold" => true
+        ]
+    ];
+    $sheet->getStyle("A1:".$sheet->getHighestDataColumn()."2")->applyFromArray($headStyles);
+    $choiceStyles = [
+        "alignment" => [
+            "horizontal" => Alignment::HORIZONTAL_CENTER,
+            "vertical" => Alignment::VERTICAL_CENTER
+        ],
+        "borders" => [
+            "allBorders" => [
+                "borderStyle" => Border::BORDER_THIN
+            ]
+        ]
+    ];
+    $sheet->getStyle("C3:".$sheet->getHighestDataColumn().$sheet->getHighestDataRow())->applyFromArray($choiceStyles);
+    $nameStyles = [
+        "alignment" => [
+            "horizontal" => Alignment::HORIZONTAL_RIGHT,
+            "vertical" => Alignment::VERTICAL_CENTER
+        ],
+        "borders" => [
+            "allBorders" => [
+                "borderStyle" => Border::BORDER_THIN
+            ],
+            "left" => [
+                "borderStyle" => Border::BORDER_THICK
+            ],
+            "right" => [
+                "borderStyle" => Border::BORDER_THICK
+            ],
+        ]
+    ];
+    $sheet->getStyle("B3:B".$sheet->getHighestDataRow())->applyFromArray($nameStyles);
+    $noStyles = [
+        "alignment" => [
+            "horizontal" => Alignment::HORIZONTAL_CENTER,
+            "vertical" => Alignment::VERTICAL_CENTER
+        ],
+        "borders" => [
+            "allBorders" => [
+                "borderStyle" => Border::BORDER_THIN
+            ]
+        ]
+    ];
+    $sheet->getStyle("A3:A".$sheet->getHighestDataRow())->applyFromArray($noStyles);
+    $bottomStyles = [
+        "borders" => [
+            "bottom" => [
+                "borderStyle" => Border::BORDER_THICK
+            ]
+        ]
+    ];
+    $sheet->getStyle("A".$sheet->getHighestDataRow().":".$sheet->getHighestDataColumn().$sheet->getHighestDataRow())->applyFromArray($bottomStyles);
+    $sideStyles = [
+        "borders" => [
+            "right" => [
+                "borderStyle" => Border::BORDER_THICK
+            ]
+        ]
+    ];
+    $sheet->getStyle($sheet->getHighestDataColumn()."1:".$sheet->getHighestDataColumn().$sheet->getHighestDataRow())->applyFromArray($sideStyles);
+    $sheet->getColumnDimension("B")->setAutoSize(true);
+    switch ($_POST["format"]) {
+        case "Xlsx":
+            $format = ".xlsx";
+            break;
+        case "Xls":
+            $format = ".xls";
+            break;
+        case "Ods":
+            $format = ".ods";
+            break;
+    }
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: inline;filename="'.$groupName.' '.date_format(date_create($_POST['from']), 'Y. m. d.').' - '.date_format(date_create($_POST['to']), 'Y. m. d').$format.'"');
+    header('Cache-Control: max-age=0');
+    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $_POST["format"]);
+    $writer->save('php://output');
+} else {
+    $groups = $mysql->query("SELECT * FROM `groups`")->fetch_all(MYSQLI_ASSOC);
+    echo $twig->render("export.choices.html.twig", ["groups" => $groups, "from" => $_GET["from"] ?? null, "to" => $_GET["to"] ?? null, "groupId" => $_GET["group"] ?? null]);
+}
+?>

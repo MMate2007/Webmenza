@@ -1,0 +1,26 @@
+version: '3'
+services:
+  php-apache:
+    build: .
+    container_name: webmenza-php-apache
+    volumes:
+      - ./:/var/www/html/
+      - ./vendor:/var/www/html/vendor/
+    ports:
+      - 80:80
+    links:
+      - db
+  db:
+    image: mysql
+    container_name: webmenza-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: webmenza
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    links:
+      - db

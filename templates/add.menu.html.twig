@@ -1,0 +1,23 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Menü hozzáadása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Menü hozzáadása
+{% endblock headtitle %}
+
+{% block content %}
+<form method="post" action="#">
+    <div class="mb-3">
+        <label for="date" class="form-label">Nap:</label>
+        <input type="date" name="date" id="date" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="date" class="form-label">Menü:</label>
+        <textarea name="menu" id="menu" required class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
+</form>
+{% endblock content %}
