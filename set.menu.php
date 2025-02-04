@@ -3,7 +3,7 @@ require_once "config.php";
 authUser();
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
-$stmt = $mysql->prepare("SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE ? BETWEEN `from` AND `to`;");
+$stmt = $mysql->prepare("SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE ? BETWEEN `from` AND `to`");
 $stmt->execute([$_GET["date"]]);
 $allowedtofill = $stmt->get_result()->fetch_row();
 if ($allowedtofill !== null) {
@@ -18,7 +18,7 @@ if (isset($_POST["date"]) && $allowedtofill) {
     if ($stmt->execute()) {
         Message::addMessage("Választás sikeresen mentve!", MessageType::success);
     }
-    $stmt = $mysql->prepare("SELECT `date` FROM `menu` WHERE `date` > ? LIMIT 1");
+    $stmt = $mysql->prepare("SELECT `date` FROM `menu` LEFT JOIN `deadlines` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` WHERE `date` > ? AND ((CURDATE() BETWEEN `start` AND `end`) OR `start` IS NULL) LIMIT 1");
     $stmt->execute([$_POST["date"]]);
     $row = $stmt->get_result()->fetch_row();
     if ($row !== null) {
