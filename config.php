@@ -8,7 +8,7 @@ $dbcred = [
     "host" => "db",
     "username" => "root",
     "password" => "root",
-    "db" => "webmenzakey"
+    "db" => "webmenza"
 ];
 
 $rp = [
