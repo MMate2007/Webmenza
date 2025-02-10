@@ -33,6 +33,13 @@ if (isset($_POST["date"]) && $allowedtofill) {
     }
 }
 if ($allowedtofill === false) {
+    $stmt = $mysql->prepare("SELECT `value` FROM `modifications` WHERE `userId` = ? AND `date` = ?");
+    $stmt->bind_param("is", $_SESSION["userId"], $date);
+    $stmt->execute();
+    $requests = $stmt->get_result()->fetch_row();
+    if ($requests != null) {
+        $requests=$requests[0] ?? 0;
+    }
     Message::addMessage("A kitöltési határidő erre a napra lejárt!", MessageType::danger);
 }
 $stmt = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `date` = ? AND `userId` = ?");
@@ -43,5 +50,5 @@ if ($choice !== null) $choice = $choice[0];
 $stmt = $mysql->prepare("SELECT `id`, `description` FROM `menu` WHERE `date` = ?");
 $stmt->execute([$date]);
 $menu = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-echo $twig->render("set.menu.html.twig", ["date" => $date, "id" => $choice, "menu" => $menu ?? null, "fillable" => $allowedtofill]);
+echo $twig->render("set.menu.html.twig", ["date" => $date, "id" => $choice, "menu" => $menu ?? null, "fillable" => $allowedtofill, "requests" => $requests ?? null]);
 ?>

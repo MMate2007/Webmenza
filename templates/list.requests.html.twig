@@ -1,0 +1,37 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Lemondási kérelmek - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Lemondási kérelmek
+{% endblock headtitle %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Név</th>
+                <th>Nap</th>
+                <th>Kérelmezés időpontja</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for modification in modifications %}
+            <tr>
+                <td>{{ modification.name }}</td>
+                <td>{{ modification.date|date("Y. m. d.") }}</td>
+                <td>{{ modification.createdAt|date("Y. m. d. H:i:s") }}</td>
+                <td>
+                    <a href="edit.request.php?userId={{ modification.userId }}&date={{ modification.date }}&state=1" role="button" class="btn btn-success"><i class="bi bi-check-lg"></i> Elfogadás</a>
+                    <a href="edit.request.php?userId={{ modification.userId }}&date={{ modification.date }}&state=0" role="button" class="btn btn-danger"><i class="bi bi-x-lg"></i> Elutasítás</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

@@ -45,6 +45,15 @@ CREATE TABLE `deadlines` (
     PRIMARY KEY (`id`),
     UNIQUE KEY (`from`, `to`)
 );
+CREATE TABLE `modifications` (
+    `userId` INT NOT NULL,
+    `date` DATE NOT NULL,
+    `value` INT NULL,
+    `approved` BOOLEAN NULL DEFAULT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    UNIQUE KEY (`userId`, `date`),
+    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 INSERT INTO `groups` (`id`, `name`)
 VALUES (1, '_admin'),
     (2, '_manager');
