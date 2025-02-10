@@ -26,7 +26,8 @@ CREATE TABLE `choices` (
     `date` DATE NOT NULL,
     `menuId` INT NULL,
     PRIMARY KEY (`userId`, `date`),
-    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`date`, `menuId`) REFERENCES `menu`(`date`, `id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE `passkeys` (
     `id` VARCHAR(255) NOT NULL,
@@ -52,7 +53,8 @@ CREATE TABLE `modifications` (
     `approved` BOOLEAN NULL DEFAULT NULL,
     `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     UNIQUE KEY (`userId`, `date`),
-    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`userId`, `date`) REFERENCES `choices`(`userId`, `date`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 INSERT INTO `groups` (`id`, `name`)
 VALUES (1, '_admin'),
