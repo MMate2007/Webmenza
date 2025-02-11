@@ -12,7 +12,7 @@
 <form method="post" action="#">
     <div class="mb-3">
         <label for="date" class="form-label">Nap:</label>
-        <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" readonly>
+        <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" onchange="window.location.href = 'set.menu.php?date='+this.value">
     </div>
     <div class="mb-3">
         <label class="form-label">Menü:</label>
