@@ -1,14 +1,14 @@
 CREATE TABLE `groups` (
-    `id` INT NOT NULL AUTO_INCREMENT,
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`name`)
 );
 CREATE TABLE `users` (
-    `id` INT NOT NULL AUTO_INCREMENT,
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    `groupId` INT NULL DEFAULT NULL,
+    `groupId` INT UNSIGNED NULL DEFAULT NULL,
     `registered` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`name`, `groupId`),
@@ -17,28 +17,28 @@ CREATE TABLE `users` (
 );
 CREATE TABLE `menu` (
     `date` DATE NOT NULL,
-    `id` INT NOT NULL,
+    `id` INT UNSIGNED NOT NULL,
     `description` TEXT NOT NULL,
     PRIMARY KEY (`date`, `id`)
 );
 CREATE TABLE `choices` (
-    `userId` INT NOT NULL,
+    `userId` INT UNSIGNED NOT NULL,
     `date` DATE NOT NULL,
-    `menuId` INT NULL,
+    `menuId` INT UNSIGNED NULL,
     PRIMARY KEY (`userId`, `date`),
     FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`date`, `menuId`) REFERENCES `menu`(`date`, `id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE `passkeys` (
     `id` VARCHAR(255) NOT NULL,
-    `userId` INT NOT NULL,
+    `userId` INT UNSIGNED NOT NULL,
     `publicKey` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE `deadlines` (
-    `id` INT NOT NULL AUTO_INCREMENT,
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `from` DATE NOT NULL,
     `to` DATE NOT NULL,
     `start` DATE NOT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE `deadlines` (
     UNIQUE KEY (`from`, `to`)
 );
 CREATE TABLE `modifications` (
-    `userId` INT NOT NULL,
+    `userId` INT UNSIGNED NOT NULL,
     `date` DATE NOT NULL,
-    `value` INT NULL,
+    `value` INT UNSIGNED NULL,
     `approved` BOOLEAN NULL DEFAULT NULL,
     `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     UNIQUE KEY (`userId`, `date`),
