@@ -16,4 +16,38 @@
             A mai napra nem igényeltél étkezést.
         {% endif %}
     </p>
+    <div>
+        <h3>Lemondási kérelmeid</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nap</th>
+                        <th>Állapot</th>
+                        <th>Műveletek</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for modification in modifications %}
+                    <tr>
+                        <td>{{ modification.date|date("Y. m. d.") }}</td>
+                        <td>
+                            {% if modification.approved is same as(0) %}
+                                elutasítva
+                            {% elseif modification.approved is same as(null) %}
+                                függőben
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if modification.approved is same as(null) %}
+                            <a href="delete.modification.php?date={{ modification.date }}" role="button" class="btn btn-danger"><i class="bi bi-x-lg"></i> Visszavonás</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
 {% endblock content %}

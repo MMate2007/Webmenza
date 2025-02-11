@@ -7,5 +7,9 @@ $stmt = $mysql->prepare("SELECT `description` FROM `menu` INNER JOIN `choices` O
 $stmt->bind_param("i", $_SESSION["userId"]);
 $stmt->execute();
 $todayMenu = $stmt->get_result()->fetch_row();
-echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu]);
+$stmt = $mysql->prepare("SELECT `date`, `approved` FROM `modifications` WHERE `userId` = ? ORDER BY `date`");
+$stmt->bind_param("i", $_SESSION["userId"]);
+$stmt->execute();
+$modifications = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu, "modifications" => $modifications]);
 ?>
