@@ -9,4 +9,11 @@
 {% endblock headtitle %}
 
 {% block content %}
+    <p>
+        {% if todayMenu %}
+            A mai ebéded: {{ todayMenu[0]|nl2br }}.
+        {% else %}
+            A mai napra nem igényeltél étkezést.
+        {% endif %}
+    </p>
 {% endblock content %}
