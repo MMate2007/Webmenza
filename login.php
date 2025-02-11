@@ -41,7 +41,7 @@ echo $twig->render("adminlogin.html.twig");
     header("Location: admin/index.php");
     exit;
 } else {
-    header("Location: index.php");
+    header("Location: home.php");
     exit;
 }
 ?>
