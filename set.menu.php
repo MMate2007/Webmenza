@@ -46,7 +46,7 @@ $stmt = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `date` = ? AND `us
 $stmt->bind_param("si", $date, $_SESSION["userId"]);
 $stmt->execute();
 $choice = $stmt->get_result()->fetch_row();
-if ($choice !== null) $choice = $choice[0];
+if ($choice !== null) $choice = $choice[0]; else $choice = 0;
 $stmt = $mysql->prepare("SELECT `id`, `description` FROM `menu` WHERE `date` = ?");
 $stmt->execute([$date]);
 $menu = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);

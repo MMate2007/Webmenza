@@ -20,7 +20,7 @@
     <div class="mb-3">
         {% if menu != null %}
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="meal" id="meal-null" value="null" {% if id == null %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
+            <input class="form-check-input" type="radio" name="meal" id="meal-null" value="null" {% if id is same as(null) %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
             <label class="form-check-label" for="meal-null">
               Erre a napra nem igénylek étkeztetést.
             </label>
@@ -41,7 +41,7 @@
         <p>Erre a napra benyújtottál egy lemondási kérelmet.</p>
     {% endif %}
     <button type="submit" class="btn btn-primary" {% if fillable == false %}disabled{% endif %}><i class="bi bi-floppy"></i> Mentés</button>
-    {% if fillable == false %} 
+    {% if fillable == false and id > 0 %} 
         <a role="button" href="request.modification.php?date={{ date }}" class="btn btn-danger {% if requests is same as(0) %}disabled{% endif %}" {% if requests is same as(0) %}aria-disabled="true"{% endif %}><i class="bi bi-x-lg"></i> Lemondás</a>
     {% endif %}
 </form>
