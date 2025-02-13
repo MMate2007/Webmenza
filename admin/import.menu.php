@@ -12,6 +12,8 @@ if (isset($_FILES["spreadsheet"])) {
         $bstart = array_search("B menü", $row);
     }
     $rowGenerator = $sheet->rangeToArrayYieldRows("A3:".$sheet->getHighestDataColumn().$sheet->getHighestDataRow());
+    $mysql->begin_transaction();
+    try {
     $stmt = $mysql->prepare("INSERT INTO `menu`(`date`, `id`, `description`) VALUES (?,?,?)");
     $stmt->bind_param("sis", $date, $id, $description);
     foreach ($rowGenerator as $row) {
@@ -26,7 +28,12 @@ if (isset($_FILES["spreadsheet"])) {
         $description = $row[$bstart]."\n".$row[$bstart+1]."\n".$row[$bstart+2];
         $stmt->execute(); }
     }
+    $mysql->commit();
     Message::addMessage("Menü importálása sikeres!", MessageType::success);
+    } catch (mysqli_sql_exception $e) {
+        $mysql->rollback();
+        throw $e;
+    }
 }
 echo $twig->render("import.menu.html.twig");
 ?>
