@@ -1,0 +1,30 @@
+<table class="calendar">
+    <thead>
+        <th>H</th>
+        <th>K</th>
+        <th>Sze</th>
+        <th>Cs</th>
+        <th>P</th>
+        <th>Szo</th>
+        <th>V</th>
+    </thead>
+    <tbody>
+        {% for day, value in days %}
+            {% if day|date("N") == 1 or day|date("j") == 1 %}
+                <tr>
+            {% endif %}
+
+            {% if day|date("N") != 1 and day|date("j") == 1 %}
+                {% for i in range(2,day|date("N")) %}
+                    <td></td>
+                {% endfor %}
+            {% endif %}
+
+            <td class="{% if "now"|date("Y-m-d") == day|date("Y-m-d") %}today {% endif %}{% if value.choice is same as(0) %}no-meal{% elseif value.choice == 1 %}yes-meal{% endif %}{% if day|date("Y-m-d") == date %} selected{% endif %}"><a href="set.menu.php?date={{ day|date("Y-m-d") }}" style="text-decoration: none;"><span {% if value.menu is same as(null) %}style="color: #c9c9c9;"{% endif %}>{{ day|date("j") }}</span></a></td>
+
+            {% if day|date("N") == 7 or day|date("j") == ("last day of " ~ day|date("Y-m"))|date("j") %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>

@@ -12,6 +12,30 @@
     html, body {
 		height: 100%;
 	}
+    table.calendar {
+        border-collapse: separate;
+    }
+    table.calendar tr td, th {
+        border-radius: 30%;
+        padding: 6px;
+        padding-block: 5px;
+        text-align: center;
+    }
+    table.calendar tr td a {
+        color: black;
+    }
+    table.calendar tr td.today {
+        border: 2px blue solid;
+    }
+    table.calendar tr td.selected {
+        background-color: blue;
+    }
+    table.calendar tr td.no-meal {
+        background-color: red;
+    }
+    table.calendar tr td.yes-meal {
+        background-color: green;
+    }
     {% block customstyle %}{% endblock %}
     </style>
     {% block script %}{% endblock script %}

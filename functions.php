@@ -33,6 +33,45 @@ class Message {
     }
 }
 
+function fetchDatesForCal(string|null $month = null, int|null $userId = null): array {
+    global $mysql, $_SESSION;
+    if ($month === null) {
+        $month = date("Y-m");
+    }
+    if ($userId === null) {
+        $userId = $_SESSION["userId"];
+    }
+    $start = new DateTime('first day of '.$month);
+    $end = new DateTime('last day of '.$month);
+    $end->modify("+1 days");
+    $interval = new DateInterval('P1D');
+    $days = new DatePeriod($start, $interval, $end);
+    $dates = [];
+    $menustmt = $mysql->prepare("SELECT DISTINCT 1 FROM `menu` WHERE `date` = ?");
+    $menustmt->bind_param("s", $date);
+    $choicestmt = $mysql->prepare("SELECT CASE WHEN `menuId` > 0 THEN TRUE WHEN `menuId` IS NULL THEN FALSE END FROM `choices` WHERE `userId` = ? AND `date` = ?");
+    $choicestmt->bind_param("is", $userId, $date);
+    foreach ($days as $day) {
+        $date = $day->format("Y-m-d");
+        $menustmt->execute();
+        $res = $menustmt->get_result()->fetch_row();
+        $res2 = null;
+        if ($res != null) {
+            $res = $res[0];
+            $choicestmt->execute();
+            $res2 = $choicestmt->get_result()->fetch_row();
+            if ($res2 != null) {
+                $res2 = $res2[0];
+            }
+        }
+        $dates[$date] = [
+            "menu" => $res,
+            "choice" => $res2
+        ];
+    }
+    return $dates;
+}
+
 function deletePastData(): void {
     global $dbcred, $deletePastDataAfter;
     $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
