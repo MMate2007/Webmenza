@@ -44,7 +44,8 @@ CREATE TABLE `deadlines` (
     `start` DATE NOT NULL,
     `end` DATE NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY (`from`, `to`)
+    UNIQUE KEY (`from`, `to`),
+    CHECK (`from` <= `to` AND `start` <= `end`)
 );
 CREATE TABLE `modifications` (
     `userId` INT UNSIGNED NOT NULL,
