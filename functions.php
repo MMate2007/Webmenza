@@ -33,7 +33,16 @@ class Message {
     }
 }
 
+function deletePastData(): void {
+    global $dbcred, $deletePastDataAfter;
+    $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
+    $mysql->query("SET NAMES utf8");
+    $mysql->query("DELETE FROM `menu` WHERE `date` < CURRENT_DATE - INTERVAL ".$deletePastDataAfter);
+    $mysql->close();
+}
+
 function authUser(int $adminLevel = 0, bool $allownonregistered = false): void {
+    deletePastData();
     if (!isset($_SESSION["userId"])) {
         $_SESSION["messages"][] = new Message("A tartalom megtekintéséhez azonosítás szükséges.", MessageType::danger);
         header("Location: login.php");

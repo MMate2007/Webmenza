@@ -18,6 +18,8 @@ $rp = [
 
 $menuletters = "ABCDEFGHIJKL";
 
+$deletePastDataAfter = "2 MONTH";
+
 session_start();
 
 $loader = new \Twig\Loader\FilesystemLoader($rootdir.'templates');
