@@ -15,5 +15,5 @@ $stmt = $mysql->prepare("SELECT `from`, `to`, `end`, COUNT(`choices`.`date`) AS 
 $stmt->bind_param("i", $_SESSION["userId"]);
 $stmt->execute();
 $deadlines = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu, "modifications" => $modifications, "deadlines" => $deadlines]);
+echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu, "modifications" => $modifications, "deadlines" => $deadlines, "days" => fetchDatesForCal(date_create()->format("Y-m"))]);
 ?>
