@@ -13,7 +13,7 @@
     <div class="mb-3">
         <label for="date" class="form-label">Nap:</label>
         <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" onchange="window.location.href = 'set.menu.php?date='+this.value">
-        {% include "_calendar.html.twig" %}
+        <div class="d-flex justify-content-center">{% include "_calendar.html.twig" %}</div>
     </div>
     <div class="mb-3">
         <label class="form-label">Menü:</label>
