@@ -14,27 +14,31 @@
 	}
     table.calendar {
         border-collapse: separate;
+        table-layout: fixed;
+        width: 270px;
+    }
+    table.calendar tr {
+        height: 36.2833px;
     }
     table.calendar tr td, th {
-        border-radius: 30%;
-        padding: 6px;
-        padding-block: 5px;
+        border-radius: 80%;
         text-align: center;
+        aspect-ratio: 1 / 1;
     }
     table.calendar tr td a {
         color: black;
     }
     table.calendar tr td.today {
-        border: 2px blue solid;
-    }
-    table.calendar tr td.selected {
-        background-color: blue;
+        border: 2px var(--bs-primary) solid;
     }
     table.calendar tr td.no-meal {
-        background-color: red;
+        background-color: var(--bs-red);
     }
     table.calendar tr td.yes-meal {
-        background-color: green;
+        background-color: var(--bs-green);
+    }
+    table.calendar tr td.selected {
+        background-color: var(--bs-primary);
     }
     {% block customstyle %}{% endblock %}
     </style>
