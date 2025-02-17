@@ -17,6 +17,32 @@
         {% endif %}
     </p>
     <div>
+        <h3>Határidők</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tartomány</th>
+                        <th>Határidő</th>
+                        <th>Kitöltve</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deadline in deadlines %}
+                    <tr>
+                        <td>
+                            {{ deadline.from|date("m. d.") }} - {{ deadline.to|date("m. d.") }}
+                        </td>
+                        <td>{{ deadline.end|date("m. d.") }}</td>
+                        <td>{{ deadline.choices }}/{{ deadline.dates }} ({{ (deadline.choices / deadline.dates * 100)|round }}%)</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
         <h3>Lemondási kérelmeid</h3>
         <div class="table-responsive">
             <table class="table">
@@ -48,6 +74,5 @@
                 </tbody>
             </table>
         </div>
-        
     </div>
 {% endblock content %}
