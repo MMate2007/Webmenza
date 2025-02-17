@@ -33,7 +33,7 @@
                     {% for deadline in deadlines %}
                     <tr>
                         <td>
-                            {{ deadline.from|date("m. d.") }} - {{ deadline.to|date("m. d.") }}
+                            <a href="set.menu.php?date={{ deadline.from|date("Y-m-d") }}">{{ deadline.from|date("m. d.") }} - {{ deadline.to|date("m. d.") }}</a>
                         </td>
                         <td>{{ deadline.end|date("m. d.") }}</td>
                         <td>{{ deadline.choices }}/{{ deadline.dates }} ({{ (deadline.choices / deadline.dates * 100)|round }}%)</td>
