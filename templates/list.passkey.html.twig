@@ -13,7 +13,7 @@
 {% endblock script %}
 
 {% block content %}
-<button class="btn btn-primary" id="createpasskeybutton" onclick="register()"><i class="bi bi-plus-lg"></i> Létrehozás</button>
+<button class="btn btn-primary" id="createpasskeybutton"><i class="bi bi-plus-lg"></i> Létrehozás</button>
 <p id="success"></p>
 <p id="error"></p>
     <div class="table-responsive">
@@ -35,63 +35,49 @@
         </table>
     </div>
     <script>
-        const { startRegistration } = SimpleWebAuthnBrowser;
-      
-        // <button>
-        const elemBegin = document.getElementById('createpasskeybutton');
-        // <span>/<p>/etc...
-        const elemSuccess = document.getElementById('success');
-        // <span>/<p>/etc...
-        const elemError = document.getElementById('error');
-      
-        // Start registration when the user clicks a button
-        elemBegin.addEventListener('click', async () => {
-          // Reset success/error messages
-          elemSuccess.innerHTML = '';
-          elemError.innerHTML = '';
-      
-          // GET registration options from the endpoint that calls
-          // @simplewebauthn/server -> generateRegistrationOptions()
-          const resp = await fetch('/register.passkey.php?stage=0');
-          const optionsJSON = await resp.json();
-      
-          let attResp;
-          try {
-            // Pass the options to the authenticator and wait for a response
-            attResp = await startRegistration({ optionsJSON });
-          } catch (error) {
-            // Some basic error handling
-            if (error.name === 'InvalidStateError') {
-              elemError.innerText = 'Error: Authenticator was probably already registered by user';
-            } else {
-              elemError.innerText = error;
-            }
-      
-            throw error;
-          }
-      
-          // POST the response to the endpoint that calls
-          // @simplewebauthn/server -> verifyRegistrationResponse()
-          const verificationResp = await fetch('/register.passkey.php?stage=1', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(attResp),
-          });
-      
-          // Wait for the results of verification
-          const verificationJSON = await verificationResp.json();
-      
-          // Show UI appropriate for the `verified` status
-          if (verificationJSON && verificationJSON.verified) {
-            elemSuccess.innerHTML = 'Success!';
-          } else {
-            elemError.innerHTML = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
-              verificationJSON,
-            )}</pre>`;
-          }
-        });
-      </script>
+      const { startRegistration } = SimpleWebAuthnBrowser;
+  const elemBegin = document.getElementById('createpasskeybutton');
+  const elemSuccess = document.getElementById('success');
+  const elemError = document.getElementById('error');
+
+  elemBegin.addEventListener('click', async () => {
+    elemSuccess.innerHTML = '';
+    elemError.innerHTML = '';
+
+    const resp = await fetch('/register.passkey.php?stage=0');
+    const optionsJSON = await resp.json();
+
+    let attResp;
+    try {
+      attResp = await startRegistration({ optionsJSON });
+    } catch (error) {
+      if (error.name === 'InvalidStateError') {
+        elemError.innerText = 'Error: Authenticator was probably already registered by user';
+      } else {
+        elemError.innerText = error;
+      }
+
+      throw error;
+    }
+
+    const verificationResp = await fetch('/register.passkey.php?stage=1', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(attResp),
+    });
+
+    const verificationJSON = await verificationResp.json();
+
+    if (verificationJSON && verificationJSON.verified) {
+      elemSuccess.innerHTML = 'Jelkulcs létrehozása sikeres!';
+    } else {
+      elemError.innerHTML = `Valami nem sikerült: <pre>${JSON.stringify(
+        verificationJSON,
+      )}</pre>`;
+    }
+  });
+    </script>
       
 {% endblock content %}
