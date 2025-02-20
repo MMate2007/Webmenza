@@ -9,6 +9,93 @@ body { background-color: #dfdfdf; }
 main { height: 85% !important; }
 {% endblock %}
 
+{% block script %}
+<script>
+	function recursiveBase64StrToArrayBuffer(obj) {
+		let prefix = '=?BINARY?B?';
+		let suffix = '?=';
+		if (typeof obj === 'object') {
+			for (let key in obj) {
+				if (typeof obj[key] === 'string') {
+					let str = obj[key];
+					if (str.substring(0, prefix.length) === prefix && str.substring(str.length - suffix.length) === suffix) {
+						str = str.substring(prefix.length, str.length - suffix.length);
+
+						let binary_string = window.atob(str);
+						let len = binary_string.length;
+						let bytes = new Uint8Array(len);
+						for (let i = 0; i < len; i++)        {
+							bytes[i] = binary_string.charCodeAt(i);
+						}
+						obj[key] = bytes.buffer;
+					}
+				} else {
+					recursiveBase64StrToArrayBuffer(obj[key]);
+				}
+			}
+		}
+	}
+	function arrayBufferToBase64(buffer) {
+		let binary = '';
+		let bytes = new Uint8Array(buffer);
+		let len = bytes.byteLength;
+		for (let i = 0; i < len; i++) {
+			binary += String.fromCharCode( bytes[ i ] );
+		}
+		return window.btoa(binary);
+	}
+
+	async function autologin(conditional = false) {
+		if (!window.fetch || !navigator.credentials || !navigator.credentials.create) {
+			throw new Error('Browser not supported.');
+		}
+	
+		let rep = await window.fetch('login.passkey.php?stage=0', {method:'GET',cache:'no-cache'});
+		const getArgs = await rep.json();
+	
+		if (getArgs.success === false) {
+			throw new Error(getArgs.msg);
+		}
+	
+		recursiveBase64StrToArrayBuffer(getArgs);
+		if (conditional) {
+		getArgs.mediation = "conditional";
+		}
+	
+		const cred = await navigator.credentials.get(getArgs);
+	
+		const authenticatorAttestationResponse = {
+			id: cred.rawId ? arrayBufferToBase64(cred.rawId) : null,
+			clientDataJSON: cred.response.clientDataJSON  ? arrayBufferToBase64(cred.response.clientDataJSON) : null,
+			authenticatorData: cred.response.authenticatorData ? arrayBufferToBase64(cred.response.authenticatorData) : null,
+			signature: cred.response.signature ? arrayBufferToBase64(cred.response.signature) : null,
+			userHandle: cred.response.userHandle ? arrayBufferToBase64(cred.response.userHandle) : null
+		};
+	
+		rep = await window.fetch('login.passkey.php?stage=1', {
+			method:'POST',
+			body: JSON.stringify(authenticatorAttestationResponse),
+			cache:'no-cache'
+		});
+		const authenticatorAttestationServerResponse = await rep.json();
+	
+		if (authenticatorAttestationServerResponse.success) {
+			window.location.reload();
+		} else {
+			throw new Error(authenticatorAttestationServerResponse.msg);
+		}	
+	}
+
+	if (window.PublicKeyCredential &&
+	PublicKeyCredential.isConditionalMediationAvailable) {
+	const isCMA = PublicKeyCredential.isConditionalMediationAvailable();
+	if (isCMA) {
+		autologin(true);
+	}
+	}
+</script>
+{% endblock script %}
+
 {% block title %}
     Adminisztrátori bejelentkezés - Webmenza
 {% endblock title %}
@@ -20,7 +107,7 @@ main { height: 85% !important; }
 		<form method="post" action="login.php">
 			<div class="input-group mb-3">
 				<span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-				<input type="text" class="form-control" name="name" required placeholder="Felhasználónév" autocomplete="username webauthn">
+				<input type="text" class="form-control" name="name" required placeholder="Felhasználónév" autocomplete="username webauthn" autofocus>
 			</div>
 			<div class="input-group mb-3">
 				<span class="input-group-text"><i class="bi bi-key-fill"></i></span>
