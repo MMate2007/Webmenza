@@ -20,7 +20,6 @@ main { height: 85% !important; }
 					let str = obj[key];
 					if (str.substring(0, prefix.length) === prefix && str.substring(str.length - suffix.length) === suffix) {
 						str = str.substring(prefix.length, str.length - suffix.length);
-
 						let binary_string = window.atob(str);
 						let len = binary_string.length;
 						let bytes = new Uint8Array(len);
@@ -114,7 +113,8 @@ main { height: 85% !important; }
 				<input type="password" name="password" id="password" class="form-control" required placeholder="Jelszó" autocomplete="current-password">
 			</div>
 			<button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Bejelentkezés</button>
-		</form>		
+			<button type="button" class="btn btn-outline-secondary" onclick="autologin(false)">Bejelentkezés jelkulccsal</button>
+		</form>
 	</div>
 </div>
 {% endblock content %}
