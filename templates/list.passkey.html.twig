@@ -8,10 +8,6 @@
     Jelkulcsaim
 {% endblock headtitle %}
 
-{% block script %}
-<script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
-{% endblock script %}
-
 {% block content %}
 <button class="btn btn-primary" id="createpasskeybutton" onclick="createRegistration()"><i class="bi bi-plus-lg"></i> Létrehozás</button>
 <p id="success"></p>
@@ -109,49 +105,6 @@
         }
         return window.btoa(binary);
     }
-      /*const { startRegistration } = SimpleWebAuthnBrowser;
-  const elemBegin = document.getElementById('createpasskeybutton');
-  const elemSuccess = document.getElementById('success');
-  const elemError = document.getElementById('error');
-
-  elemBegin.addEventListener('click', async () => {
-    elemSuccess.innerHTML = '';
-    elemError.innerHTML = '';
-
-    const resp = await fetch('/register.passkey.php?stage=0');
-    const optionsJSON = await resp.json();
-
-    let attResp;
-    try {
-      attResp = await startRegistration({ optionsJSON });
-    } catch (error) {
-      if (error.name === 'InvalidStateError') {
-        elemError.innerText = 'Error: Authenticator was probably already registered by user';
-      } else {
-        elemError.innerText = error;
-      }
-
-      throw error;
-    }
-
-    const verificationResp = await fetch('/register.passkey.php?stage=1', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(attResp),
-    });
-
-    const verificationJSON = await verificationResp.json();
-
-    if (verificationJSON && verificationJSON.verified) {
-      elemSuccess.innerHTML = 'Jelkulcs létrehozása sikeres!';
-    } else {
-      elemError.innerHTML = `Valami nem sikerült: <pre>${JSON.stringify(
-        verificationJSON,
-      )}</pre>`;
-    }
-  });*/
     </script>
       
 {% endblock content %}
