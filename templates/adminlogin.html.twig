@@ -92,6 +92,10 @@ main { height: 85% !important; }
 		autologin(true);
 	}
 	}
+
+	if (!window.PublicKeyCredential) {
+      document.querySelector("#passkeylogin").style.display = "none";
+    }
 </script>
 {% endblock script %}
 
@@ -113,7 +117,7 @@ main { height: 85% !important; }
 				<input type="password" name="password" id="password" class="form-control" required placeholder="Jelszó" autocomplete="current-password">
 			</div>
 			<button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Bejelentkezés</button>
-			<button type="button" class="btn btn-outline-secondary" onclick="autologin(false)">Bejelentkezés jelkulccsal</button>
+			<button type="button" class="btn btn-outline-secondary" id="passkeylogin" onclick="autologin(false)">Bejelentkezés jelkulccsal</button>
 		</form>
 	</div>
 </div>

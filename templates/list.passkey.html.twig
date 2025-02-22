@@ -31,6 +31,10 @@
         </table>
     </div>
     <script>
+      if (!window.PublicKeyCredential &&  
+    !PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+      document.querySelector("#createpasskeybutton").style.display = "none";
+    }
       async function createRegistration() {
         try {
 
@@ -69,7 +73,12 @@
             }
 
         } catch (err) {
-            window.alert(err.message || 'unknown error occured');
+            console.log(err);
+
+            if (err.message == "An attempt was made to use an object that is not, or is no longer, usable") {
+              alert("A jelkulcs már létezik! Nincs más teendő, mint használni.");
+            } else {
+            window.alert(err.message || 'Ismeretlen hiba történt!'); }
         }
     }
       function recursiveBase64StrToArrayBuffer(obj) {
