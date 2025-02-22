@@ -1,10 +1,20 @@
 <?php
 require_once "config.php";
 authUser();
-$WebAuthn = new lbuchs\WebAuthn\WebAuthn($rp["name"], $rp["id"]);
+$WebAuthn = new lbuchs\WebAuthn\WebAuthn($rp["name"], $rp["id"], useBase64UrlEncoding: false);
 switch ($_GET["stage"]) {
     case 0:
-        $args = $WebAuthn->getCreateArgs((string)$_SESSION["userId"], $_SESSION["name"], $_SESSION["name"], requireResidentKey: true);
+        $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
+        $mysql->query("SET NAMES utf8");
+        $stmt = $mysql->prepare("SELECT `id` FROM `passkeys` WHERE `userId` = ?");
+        $stmt->bind_param("i", $_SESSION["userId"]);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $exclude = [];
+        while ($row = $result->fetch_row()) {
+            $exclude[] = base64_decode($row[0]);
+        }
+        $args = $WebAuthn->getCreateArgs((string)$_SESSION["userId"], $_SESSION["name"], $_SESSION["name"], requireResidentKey: true, excludeCredentialIds: $exclude);
         $_SESSION["challenge"] = $WebAuthn->getChallenge();
         header('Content-Type: application/json');
         echo json_encode($args);
