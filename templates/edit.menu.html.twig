@@ -10,13 +10,13 @@
 
 {% block content %}
 <form method="post" action="#">
-    <div class="mb-3">
-        <label for="date" class="form-label">Nap:</label>
-        <input type="date" name="date" id="date" class="form-control" required readonly value="{{ date }}">
+    <div class="mb-3 row">
+        <label for="date" class="form-label col-sm-2">Nap:</label>
+        <input type="date" name="date" id="date" class="form-control col" required readonly value="{{ date }}">
     </div>
-    <div class="mb-3">
-        <label for="date" class="form-label">Menü:</label>
-        <textarea name="menu" id="menu" required class="form-control">{{ menu }}</textarea>
+    <div class="mb-3 row">
+        <label for="date" class="form-label col-sm-2">Menü:</label>
+        <textarea name="menu" id="menu" required class="form-control col">{{ menu }}</textarea>
     </div>
     <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
 </form>

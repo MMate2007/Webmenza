@@ -10,21 +10,21 @@
 
 {% block content %}
 <form method="post" action="#">
-    <div class="mb-3">
-        <label for="from" class="form-label">Első nap:</label>
-        <input type="date" name="from" id="from" class="form-control" required>
+    <div class="mb-3 row">
+        <label for="from" class="form-label col-sm-2">Első nap:</label>
+        <input type="date" name="from" id="from" class="form-control col" required>
     </div>
-    <div class="mb-3">
-        <label for="to" class="form-label">Utolsó nap:</label>
-        <input type="date" name="to" id="to" class="form-control" required>
+    <div class="mb-3 row">
+        <label for="to" class="form-label col-sm-2">Utolsó nap:</label>
+        <input type="date" name="to" id="to" class="form-control col" required>
     </div>
-    <div class="mb-3">
-        <label for="start" class="form-label">Első kitöltési nap:</label>
-        <input type="date" name="start" id="start" class="form-control" required>
+    <div class="mb-3 row">
+        <label for="start" class="form-label col-sm-2">Első kitöltési nap:</label>
+        <input type="date" name="start" id="start" class="form-control col" required>
     </div>
-    <div class="mb-3">
-        <label for="end" class="form-label">Utolsó kitöltési nap:</label>
-        <input type="date" name="end" id="end" class="form-control" required>
+    <div class="mb-3 row">
+        <label for="end" class="form-label col-sm-2">Utolsó kitöltési nap:</label>
+        <input type="date" name="end" id="end" class="form-control col" required>
     </div>
     <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
 </form>
