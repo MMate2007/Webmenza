@@ -7,12 +7,8 @@ $stmt = $mysql->prepare("SELECT `name` FROM `groups` WHERE `id` = ?");
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $groupname = $stmt->get_result()->fetch_row()[0];
-$stmt = $mysql->prepare("SELECT `id`, `name` FROM `users` WHERE `groupId` = ? AND `name` LIKE ?");
-$search = "%";
-if (isset($_GET["search"])) {
-    $search = "%".$_GET["search"]."%";
-}
-$stmt->bind_param("is", $_GET["id"], $search);
+$stmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
+$stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_array()) {

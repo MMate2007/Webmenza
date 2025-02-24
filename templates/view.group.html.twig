@@ -26,20 +26,12 @@
         <a href="export.choices.php?group={{ groupId }}" class="btn btn-primary" role="button"><i class="bi bi-list-check"></i> Igénylések exportálása</a>
         <a href="export.form.php?group={{ groupId }}" class="btn btn-primary" role="button"><i class="bi bi-file-ruled"></i> Igénylőlap generálása</a>
     </div>
-    <form action="#" method="get" role="search" class="d-flex">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Írja ide a keresett nevet..." aria-label="Kulcsszó" aria-describedby="searchbutton" name="search" value="{{ search|escape }}">
-            <input type="hidden" name="id" value="{{ groupId|e }}">
-            <button class="btn btn-outline-primary" type="submit" id="searchbutton"><i class="bi bi-search"></i> Keresés</button>
-        </div>
-    </form>
 </div>
 
 <div class="table-responsive">
     <table class="table">
         <thead>
             <tr>
-                <th style="width: 10px;"></th>
                 <th>Név</th>
                 <th>Műveletek</th>
             </tr>
@@ -47,8 +39,7 @@
         <tbody>
             {% for user in users %}
             <tr>
-                <td><input type="checkbox" name="users[]" id="user-{{ user[0] }}" value="{{ user[0] }}" class="form-check-input"></td>
-                <td><a href="view.user.php?id={{ user[0] }}">{{ user[1] }}</a></td>
+                <td><a href="view.user.php?id={{ user[0] }}">{{ user[1] }}</a>{% if user[2] == 0 %} (nem regisztrált){% endif %}</td>
                 <td></td>
             </tr>
             {% endfor %}
