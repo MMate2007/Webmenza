@@ -3,12 +3,12 @@ require_once "../config.php";
 authUser(1);
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
-$result = $mysql->query("SELECT `id`, `name` FROM `groups`");
+$result = $mysql->query("SELECT `id`, `name` FROM `groups` ORDER BY `name`");
 if (isset($_GET["search"])) {
     if ($_GET["search"] != null) {
         $search = $_GET["search"];
         str_replace("_", "", $search);
-        $stmt = $mysql->prepare("SELECT `id`, `name` FROM `groups` WHERE `name` LIKE ?");
+        $stmt = $mysql->prepare("SELECT `id`, `name` FROM `groups` WHERE `name` LIKE ? ORDER BY `name`");
         $stmt->execute(["%".$search."%"]);
         $result = $stmt->get_result();
 }}
