@@ -11,6 +11,7 @@ main { height: 85% !important; }
 
 {% block script %}
 <script>
+	document.documentElement.setAttribute("data-bs-theme", "light");
 	function recursiveBase64StrToArrayBuffer(obj) {
 		let prefix = '=?BINARY?B?';
 		let suffix = '?=';
@@ -55,10 +56,11 @@ main { height: 85% !important; }
 		if (getArgs.success === false) {
 			throw new Error(getArgs.msg);
 		}
-	
+		const abortController = new AbortController();
 		recursiveBase64StrToArrayBuffer(getArgs);
 		if (conditional) {
 		getArgs.mediation = "conditional";
+		getArgs.signal = abortController.signal;
 		}
 	
 		const cred = await navigator.credentials.get(getArgs);
@@ -100,7 +102,7 @@ main { height: 85% !important; }
 {% endblock script %}
 
 {% block title %}
-    Adminisztrátori bejelentkezés - Webmenza
+    Bejelentkezés - Webmenza
 {% endblock title %}
 
 {% block content %}
