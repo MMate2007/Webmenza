@@ -16,14 +16,17 @@ $rp = [
     "id" => "localhost"
 ];
 
-$menuletters = "ABCDEFGHIJKL";
+$debug = true;
 
 $deletePastDataAfter = "2 MONTH";
+
+$menuletters = "ABCDEFGHIJKL";
 
 session_start();
 
 $loader = new \Twig\Loader\FilesystemLoader($rootdir.'templates');
-$twig = new \Twig\Environment($loader);
+$twig = new \Twig\Environment($loader, ["debug" => $debug ?? false, "cache" => $cacheDir ?? $rootdir."cache"]);
+if ($debug) $twig->addExtension(new \Twig\Extension\DebugExtension());
 $twig->addFunction(new \Twig\TwigFunction("getMessages", ["Message", "getMessages"]));
 $twig->addFilter(new \Twig\TwigFilter('menuletter', function ($string) {
     global $menuletters;
