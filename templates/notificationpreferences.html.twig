@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Értesítési beállítások - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Értesítési beállítások
+{% endblock headtitle %}
+
+{% block content %}
+<button class="btn btn-primary" id="getnotifications" onclick="getNotifications()">Értesítések kérése</button>
+<script>
+    function getNotifications() {
+        navigator.serviceWorker.register("notificationSW.js");
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                navigator.serviceWorker.ready.then((sw) => {
+                    sw.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: "{{ applicationServerKey }}"
+                    }).then((subscription) => {
+                        window.fetch("notificationhandler.php", {
+                            method: "POST",
+                            body: JSON.stringify(subscription)
+                        });
+                    });
+                });
+            }
+        });
+    }
+</script>
+{% endblock content %}

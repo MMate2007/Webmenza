@@ -16,6 +16,12 @@ $rp = [
     "id" => "localhost"
 ];
 
+$vapid = [
+    "subject" => $rp["id"],
+    "publicKey" => "XXXXXXXXXXXXXXX",
+    "privateKey" => "XXXX"
+];
+
 $debug = true;
 
 $deletePastDataAfter = "2 MONTH";

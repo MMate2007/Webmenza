@@ -26,6 +26,11 @@
         <label for="end" class="form-label col-sm-2">Utolsó kitöltési nap:</label>
         <input type="date" name="end" id="end" class="form-control col" required>
     </div>
-    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="1" id="notifyusers" name="notifyusers" checked>
+        <label class="form-check-label" for="notifyusers">
+          Felhasználók értesítése
+        </label>
+    </div>    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
 </form>
 {% endblock content %}

@@ -45,7 +45,10 @@ CREATE TABLE `deadlines` (
     `end` DATE NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`from`, `to`),
-    CHECK (`from` <= `to` AND `start` <= `end`)
+    CHECK (
+        `from` <= `to`
+        AND `start` <= `end`
+    )
 );
 CREATE TABLE `modifications` (
     `userId` INT UNSIGNED NOT NULL,
@@ -56,6 +59,13 @@ CREATE TABLE `modifications` (
     UNIQUE KEY (`userId`, `date`),
     FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`userId`, `date`) REFERENCES `choices`(`userId`, `date`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE `notificationsubscriptions` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `userId` INT UNSIGNED NOT NULL,
+    `data` JSON NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 INSERT INTO `groups` (`id`, `name`)
 VALUES (1, '_admin'),
