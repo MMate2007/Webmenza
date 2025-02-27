@@ -6,16 +6,14 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 authUser(1);
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
-if (isset($_POST["from"])) {
+
+function generateSheetForGroup(int $groupId) {
+    global $mysql, $spreadsheet, $menuletters;
     $stmt = $mysql->prepare("SELECT `name` FROM `groups` WHERE `id` = ?");
-    $stmt->bind_param("i", $_POST["group"]);
+    $stmt->bind_param("i", $groupId);
     $stmt->execute();
     $groupName = $stmt->get_result()->fetch_row()[0];
-    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-    $spreadsheet->getProperties()->setCreator('Webmenza - '.$_SESSION["name"])
-        ->setLastModifiedBy('Webmenza - '.$_SESSION["name"])
-        ->setTitle($groupName." menza igénylése ".date_format(date_create($_POST["from"]), "Y. m. d.")." - ".date_format(date_create($_POST["to"]), "Y. m. d."));
-    $sheet = $spreadsheet->setActiveSheetIndex(0);
+    $sheet = $spreadsheet->createSheet();
     $sheet->setTitle($groupName);
     $sheet->getDefaultColumnDimension()->setWidth(0.70, "cm");
     $stmt = $mysql->prepare("SELECT DISTINCT `date` FROM `menu` WHERE `date` BETWEEN ? AND ? ORDER BY `date`");
@@ -37,7 +35,7 @@ if (isset($_POST["from"])) {
     $sheet->setCellValue("A2", "#");
     $sheet->setCellValue("B2", "Név");
     $stmt = $mysql->prepare("SELECT `id`, `name` FROM `users` WHERE `registered` = 1 AND `groupId` = ? ORDER BY `name`");
-    $stmt->bind_param("i", $_POST["group"]);
+    $stmt->bind_param("i", $groupId);
     $stmt->execute();
     $result = $stmt->get_result();
     $counter = 1;
@@ -142,6 +140,26 @@ if (isset($_POST["from"])) {
         $sheet->getStyle([$col, 2, $col, $sheet->getHighestDataRow()])->applyFromArray($sideStyles);
     }
     $sheet->getColumnDimension("B")->setAutoSize(true);
+}
+
+if (isset($_POST["from"])) {
+    $groupName = "Csoport";
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $spreadsheet->getProperties()->setCreator('Webmenza - '.$_SESSION["name"])
+        ->setLastModifiedBy('Webmenza - '.$_SESSION["name"])
+        ->setTitle($groupName." menza igénylése ".date_format(date_create($_POST["from"]), "Y. m. d.")." - ".date_format(date_create($_POST["to"]), "Y. m. d."));
+    $sheetIndex = $spreadsheet->getIndex(
+        $spreadsheet->getSheetByName('Worksheet')
+    );
+    $spreadsheet->removeSheetByIndex($sheetIndex);
+    if ($_POST["group"] != "") {
+        generateSheetForGroup($_POST["group"]);
+    } else {
+        $result = $mysql->query("SELECT `id` FROM `groups` WHERE `name` NOT LIKE '\_%' ORDER BY `name`");
+        while ($row = $result->fetch_array()) {
+            generateSheetForGroup($row["id"]);
+        }
+    }
     switch ($_POST["format"]) {
         case "Xlsx":
             $format = ".xlsx";

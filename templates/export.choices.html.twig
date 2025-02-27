@@ -21,6 +21,7 @@
     <div class="mb-3 row">
         <label for="group" class="form-label col-sm-2">Csoport:</label>
         <select name="group" id="group" class="form-select col">
+            <option value="">Összes</option>
             {% for group in groups %}
                 <option value="{{ group['id'] }}" {% if groupId == group['id'] %} selected {% endif %}>{{ group['name']|escape }}</option>
             {% endfor %}
