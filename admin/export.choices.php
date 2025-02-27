@@ -18,7 +18,7 @@ if (isset($_POST["from"])) {
     $sheet = $spreadsheet->setActiveSheetIndex(0);
     $sheet->setTitle($groupName);
     $sheet->getDefaultColumnDimension()->setWidth(0.70, "cm");
-    $stmt = $mysql->prepare("SELECT DISTINCT `date` FROM `menu` WHERE `date` BETWEEN ? AND ?");
+    $stmt = $mysql->prepare("SELECT DISTINCT `date` FROM `menu` WHERE `date` BETWEEN ? AND ? ORDER BY `date`");
     $stmt->execute([$_POST["from"], $_POST["to"]]);
     $result = $stmt->get_result();
     $weekdays = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
