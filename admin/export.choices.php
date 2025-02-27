@@ -22,11 +22,16 @@ if (isset($_POST["from"])) {
     $stmt->execute([$_POST["from"], $_POST["to"]]);
     $result = $stmt->get_result();
     $weekdays = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
+    $weekday = 1;
     while ($row = $result->fetch_array()) {
         $date = date_create($row[0]);
         $d[] = $row[0];
         $dates[] = date_format($date, "j");
         $days[] = $weekdays[date_format($date, "N")-1];
+        if (date_format($date, "N")-1 < $weekday) {
+            $endofweek[] = count($days) + 1;
+        }
+        $weekday = date_format($date, "N")-1;
     }
     $sheet->fromArray([$dates, $days], startCell: "C1");
     $sheet->setCellValue("A2", "#");
@@ -133,6 +138,9 @@ if (isset($_POST["from"])) {
         ]
     ];
     $sheet->getStyle($sheet->getHighestDataColumn()."1:".$sheet->getHighestDataColumn().$sheet->getHighestDataRow())->applyFromArray($sideStyles);
+    foreach ($endofweek as $col) {
+        $sheet->getStyle([$col, 2, $col, $sheet->getHighestDataRow()])->applyFromArray($sideStyles);
+    }
     $sheet->getColumnDimension("B")->setAutoSize(true);
     switch ($_POST["format"]) {
         case "Xlsx":
