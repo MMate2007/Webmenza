@@ -24,7 +24,10 @@
                 {% for key in keys %}
                 <tr>
                     <td>{{ key.name|escape }}</td>
-                    <td><a href="delete.passkey.php?id={{ key.id|e }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a></td>
+                    <td>
+                        <a href="rename.passkey.php?id={{ key.id|e }}" class="btn btn-primary" role="button"><i class="bi bi-input-cursor-text"></i> Átnevezés</a>
+                        <a href="delete.passkey.php?id={{ key.id|e }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
