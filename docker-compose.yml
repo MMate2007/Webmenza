@@ -6,7 +6,6 @@ services:
     volumes:
       - ./:/var/www/html/
       - ./vendor:/var/www/html/vendor/
-      - ./conf:/etc/apache2/sites-available/
     ports:
       - 80:80
       - 443:443

@@ -11,9 +11,11 @@ WORKDIR /etc/apache2/ssl
 RUN openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj \
     "/C=HU/ST=state/L=loc/O=org/CN=fqdn" \
     -keyout ./ssl.key -out ./ssl.crt
-WORKDIR /etc/apache/sites-available
-COPY ./conf /etc/apache/sites-available
+WORKDIR /etc/apache2/sites-available
+COPY ./conf/apache /etc/apache2/sites-available
 RUN a2ensite dev
+WORKDIR /usr/local/etc/php/conf.d 
+COPY ./conf/php /usr/local/etc/php/conf.d 
 WORKDIR /var/www/html
 EXPOSE 80
 EXPOSE 443
