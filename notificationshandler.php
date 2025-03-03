@@ -10,5 +10,10 @@ switch ($_SERVER["REQUEST_METHOD"]) {
         $stmt->bind_param("is", $_SESSION["userId"], $input);
         $stmt->execute();
         break;
+    case "DELETE":
+        $stmt = $mysql->prepare("DELETE FROM `notificationsubscriptions` WHERE `data` = CAST(? as JSON)");
+        $stmt->bind_param("s", $input);
+        $stmt->execute();
+        break;
 }
 ?>

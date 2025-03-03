@@ -10,9 +10,20 @@
 
 {% block content %}
 <button class="btn btn-primary" id="getnotifications" onclick="getNotifications()">Értesítések kérése</button>
+<button class="btn btn-danger" id="unsubscribe" onclick="unsubscribe()" style="display: none;">Leiratkozás az értesítésekről</button>
 <script>
+    if (!('serviceWorker' in navigator && 'PushManager' in window)) {
+        document.querySelector("#getnotifications").style.display = "none";
+    }
+    navigator.serviceWorker.register("notificationSW.js");
+    navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription()).then(subscription => {
+        if (subscription) {
+            document.querySelector("#unsubscribe").style.display = "inline-block";
+            document.querySelector("#getnotifications").style.display = "none";
+        }
+        console.log(subscription);
+    });
     function getNotifications() {
-        navigator.serviceWorker.register("notificationSW.js");
         Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
                 navigator.serviceWorker.ready.then((sw) => {
@@ -20,14 +31,33 @@
                         userVisibleOnly: true,
                         applicationServerKey: "{{ applicationServerKey }}"
                     }).then((subscription) => {
-                        window.fetch("notificationhandler.php", {
+                        window.fetch("notificationshandler.php", {
                             method: "POST",
                             body: JSON.stringify(subscription)
                         });
+                        document.querySelector("#unsubscribe").style.display = "inline-block";
+                        document.querySelector("#getnotifications").style.display = "none";
                     });
                 });
             }
         });
+    }
+    function unsubscribe() {
+        navigator.serviceWorker.ready
+            .then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription())
+            .then(subscription => {
+                if (!subscription) {
+                    alert("Nem lettünk feliratkozva!");
+                    return;
+                } else {
+                    window.fetch("notificationshandler.php", {
+                        method: "DELETE",
+                        body: JSON.stringify(subscription)
+                    });
+                    return subscription;
+                }
+            })
+            .then(subscription => subscription.unsubscribe());
     }
 </script>
 {% endblock content %}
