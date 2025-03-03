@@ -9,4 +9,4 @@ browscap = "/var/www/html/php_browscap.ini"
 Cseréljük ki az elérési útvonalat az aktuálisra!
 
 2. Ezután adjuk ki a `docker compose up` parancsot!
-3. Konfiguráláshoz hozzunk létre a *config.php* fájl mellé egy *customconfig.php* fájlt! Ebben a fájlban lévő változók felülírják az eredetieket és ez nincs benne a verziókezelésben. Ha valamit módosítani szeretnénk a *config.php*-hoz képest, akkor másoljuk át azt a változót a *customconfig.php*-ba és írjuk át a megfelelő paramétereket!
+3. Konfiguráláshoz hozzunk létre a *config.php* fájl mellé egy *customconfig.php* fájlt (ezt kötelező akkor is megcsinálni, ha nem akarunk semmit sem felülírni)! Ebben a fájlban lévő változók felülírják az eredetieket és ez nincs benne a verziókezelésben. Ha valamit módosítani szeretnénk a *config.php*-hoz képest, akkor másoljuk át azt a változót a *customconfig.php*-ba és írjuk át a megfelelő paramétereket!
