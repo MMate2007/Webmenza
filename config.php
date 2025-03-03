@@ -27,6 +27,9 @@ $debug = true;
 $deletePastDataAfter = "2 MONTH";
 
 $menuletters = "ABCDEFGHIJKL";
+if (file_exists("customconfig.php")) {
+include_once "customconfig.php";
+}
 
 session_start();
 
