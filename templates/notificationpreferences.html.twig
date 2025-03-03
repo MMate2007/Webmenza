@@ -21,12 +21,13 @@
             document.querySelector("#unsubscribe").style.display = "inline-block";
             document.querySelector("#getnotifications").style.display = "none";
         }
-        console.log(subscription);
     });
     function getNotifications() {
         Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
                 navigator.serviceWorker.ready.then((sw) => {
+                    document.querySelector("#getnotifications").innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>';
+                    document.querySelector("#getnotifications").disabled = true;
                     sw.pushManager.subscribe({
                         userVisibleOnly: true,
                         applicationServerKey: "{{ applicationServerKey }}"
@@ -57,7 +58,12 @@
                     return subscription;
                 }
             })
-            .then(subscription => subscription.unsubscribe());
+            .then(subscription => subscription.unsubscribe())
+            .then(() => {
+                document.querySelector("#unsubscribe").style.display = "none";
+                document.querySelector("#getnotifications").style.display = "inline-block";
+                document.querySelector("#getnotifications").disabled = false;
+            });
     }
 </script>
 {% endblock content %}
