@@ -26,10 +26,7 @@ switch ($_GET["stage"]) {
         $mysql->query("SET NAMES utf8");
         $stmt = $mysql->prepare("INSERT INTO `passkeys`(`id`, `userId`, `publicKey`, `name`) VALUES (?,?,?,?)");
         $id = base64_encode($data->credentialId);
-        $name = "jelkulcs";
-        if (get_browser()) {
-            $name = get_browser(return_array: true)["platform"];
-        }
+        $name = date("Y. m. d. H:i");
         $stmt->bind_param("siss", $id, $_SESSION["userId"], $data->credentialPublicKey, $name);
         $stmt->execute();
         echo json_encode(["success" => true]);
