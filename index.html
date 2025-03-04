@@ -13,23 +13,136 @@
 		height: 100%;
 	}
     </style>
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute("data-bs-theme", "dark");
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            document.documentElement.setAttribute("data-bs-theme", event.matches ? "dark" : "light")
+        });
+        function recursiveBase64StrToArrayBuffer(obj) {
+            let prefix = '=?BINARY?B?';
+            let suffix = '?=';
+            if (typeof obj === 'object') {
+                for (let key in obj) {
+                    if (typeof obj[key] === 'string') {
+                        let str = obj[key];
+                        if (str.substring(0, prefix.length) === prefix && str.substring(str.length - suffix.length) === suffix) {
+                            str = str.substring(prefix.length, str.length - suffix.length);
+                            let binary_string = window.atob(str);
+                            let len = binary_string.length;
+                            let bytes = new Uint8Array(len);
+                            for (let i = 0; i < len; i++)        {
+                                bytes[i] = binary_string.charCodeAt(i);
+                            }
+                            obj[key] = bytes.buffer;
+                        }
+                    } else {
+                        recursiveBase64StrToArrayBuffer(obj[key]);
+                    }
+                }
+            }
+        }
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            let bytes = new Uint8Array(buffer);
+            let len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode( bytes[ i ] );
+            }
+            return window.btoa(binary);
+        }
+    
+        async function autologin(conditional = false) {
+            if (!window.fetch || !navigator.credentials || !navigator.credentials.create) {
+                throw new Error('Browser not supported.');
+            }
+        
+            let rep = await window.fetch('login.passkey.php?stage=0', {method:'GET',cache:'no-cache'});
+            const getArgs = await rep.json();
+        
+            if (getArgs.success === false) {
+                throw new Error(getArgs.msg);
+            }
+            const abortController = new AbortController();
+            recursiveBase64StrToArrayBuffer(getArgs);
+            if (conditional) {
+            getArgs.mediation = "conditional";
+            getArgs.signal = abortController.signal;
+            }
+        
+            const cred = await navigator.credentials.get(getArgs);
+        
+            const authenticatorAttestationResponse = {
+                id: cred.rawId ? arrayBufferToBase64(cred.rawId) : null,
+                clientDataJSON: cred.response.clientDataJSON  ? arrayBufferToBase64(cred.response.clientDataJSON) : null,
+                authenticatorData: cred.response.authenticatorData ? arrayBufferToBase64(cred.response.authenticatorData) : null,
+                signature: cred.response.signature ? arrayBufferToBase64(cred.response.signature) : null,
+                userHandle: cred.response.userHandle ? arrayBufferToBase64(cred.response.userHandle) : null
+            };
+        
+            rep = await window.fetch('login.passkey.php?stage=1', {
+                method:'POST',
+                body: JSON.stringify(authenticatorAttestationResponse),
+                cache:'no-cache'
+            });
+            const authenticatorAttestationServerResponse = await rep.json();
+        
+            if (authenticatorAttestationServerResponse.success) {
+                window.location.href = "login.php";
+            } else {
+                throw new Error(authenticatorAttestationServerResponse.msg);
+            }	
+        }
+    
+        if (window.PublicKeyCredential &&
+        PublicKeyCredential.isConditionalMediationAvailable) {
+        const isCMA = PublicKeyCredential.isConditionalMediationAvailable();
+        if (isCMA) {
+            autologin(true);
+        }
+        }
+    
+        if (!window.PublicKeyCredential) {
+          document.querySelector("#passkeylogin").style.display = "none";
+        }
+    </script>    
 </head>
 <body class="d-flex flex-column" style="padding-top: 70px;">
     <header>
         <nav class="navbar navbar-expand-lg bg-primary fixed-top">
             <div class="container-fluid">
                 <a href="" class="navbar-brand">Webmenza</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedConted" aria-expanded="false" aria-label="Menü megjelenésének kapcsolása">
-                    <span class="navbar-toggler-icon"></span>
-                </button>                    
             </div>
         </nav>
-        <h1 class="container">Webmenza</h1>
     </header>
     <main class="container">
-        <a href="login.php">Belépés</a>
+        <div class="container">
+            <div class="row align-items-center py-5">
+                <div class="col-md text-center text-lg-start">
+                    <h1 class="text-body-emphasis display-4">Webmenza</h1>
+                    <p>Étkezések igénylése és kezelése.</p>
+                </div>
+                <div class="col-md-7 mx-auto">
+                    <form method="post" action="login.php" class="border rounded-3 p-4 p-md-5">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input type="text" class="form-control" name="name" required placeholder="Név" autocomplete="username webauthn" autofocus>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                            <input type="password" name="password" id="password" class="form-control" required placeholder="Jelszó" autocomplete="current-password">
+                        </div>
+                        <p class="text-center m-0">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Bejelentkezés</button>
+                            <button type="button" class="btn btn-outline-secondary my-2" id="passkeylogin" onclick="autologin(false)">Bejelentkezés jelkulccsal</button>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
-    <footer style="background-color: white;" class="text-center footer mt-auto py-3">
+    <footer class="text-center footer mt-auto py-3">
         <a href="https://github.com/MMate2007/Webmenza" style="text-decoration: none;" target="_blank"><i class="bi bi-github"></i> GitHub</a>
     </footer>
 </body>
