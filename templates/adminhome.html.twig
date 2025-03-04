@@ -1,0 +1,21 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Adminisztráció - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Adminisztráció
+{% endblock headtitle %}
+
+{% block content %}
+<p>Nem regisztrált felhasználók: {{ nonreg }}/{{ allreg }} ({{ nonreg / (allreg ? allreg : 1) * 100 }} %)</p>
+<div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Exportálás</h5>
+      <p class="card-text">Igénylések és igénylőlapok előállítása</p>
+      <a href="export.choices.php" class="card-link">Igénylések exportálása</a>
+      <a href="export.form.php" class="card-link">Igénylőlapok generálása</a>
+    </div>
+  </div>
+{% endblock content %}
