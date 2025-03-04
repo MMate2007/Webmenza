@@ -24,6 +24,8 @@ $vapid = [
 
 $debug = true;
 
+$enableModificationRequests = true;
+
 $deletePastDataAfter = "2 MONTH";
 
 $menuletters = "ABCDEFGHIJKL";

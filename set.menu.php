@@ -50,5 +50,5 @@ if ($choice !== null) $choice = $choice[0]; else $choice = 0;
 $stmt = $mysql->prepare("SELECT `id`, `description` FROM `menu` WHERE `date` = ?");
 $stmt->execute([$date]);
 $menu = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-echo $twig->render("set.menu.html.twig", ["date" => $date, "id" => $choice, "menu" => $menu ?? null, "fillable" => $allowedtofill, "requests" => $requests ?? null, "days" => fetchDatesForCal(date_create($date)->format("Y-m"))]);
+echo $twig->render("set.menu.html.twig", ["date" => $date, "id" => $choice, "menu" => $menu ?? null, "fillable" => $allowedtofill, "requests" => $requests ?? null, "days" => fetchDatesForCal(date_create($date)->format("Y-m")), "enableModificationRequests" => $enableModificationRequests]);
 ?>
