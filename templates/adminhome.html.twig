@@ -9,7 +9,11 @@
 {% endblock headtitle %}
 
 {% block content %}
-<p>Nem regisztrált felhasználók: {{ nonreg }}/{{ allreg }} ({{ nonreg / (allreg ? allreg : 1) * 100 }} %)</p>
+<p>
+    Nem regisztrált felhasználók: {{ nonreg }}/{{ allreg }} ({{ nonreg / (allreg ? allreg : 1) * 100 }} %)<br>
+    Regisztrált jelkulcsok: {{ passkeys }} db<br>
+    Értesítés-feliratkozások: {{ notis }} db
+</p>
 <div class="card">
     <div class="card-body">
       <h5 class="card-title">Exportálás</h5>
