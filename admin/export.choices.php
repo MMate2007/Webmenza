@@ -21,6 +21,7 @@ function generateSheetForGroup(int $groupId) {
     $result = $stmt->get_result();
     $weekdays = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
     $weekday = 1;
+    $endofweek = [];
     while ($row = $result->fetch_array()) {
         $date = date_create($row[0]);
         $d[] = $row[0];
@@ -41,6 +42,7 @@ function generateSheetForGroup(int $groupId) {
     $counter = 1;
     $s = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `userId` = ? AND `date` = ?");
     $s->bind_param("is", $uid, $day);
+    $users = [];
     while ($row = $result->fetch_array()) {
         $uid = $row[0];
         $entry = [$counter, $row[1]];
