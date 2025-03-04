@@ -14,7 +14,10 @@
 <script>
     if (!('serviceWorker' in navigator && 'PushManager' in window)) {
         document.querySelector("#getnotifications").style.display = "none";
+        alert("Ebben a böngészőben az értesítések funkció jelenleg nem elérhető! (iOS operációs rendszer támogatása hamarosan...)");
     }
+    if ('serviceWorker' in navigator)
+    {
     navigator.serviceWorker.register("notificationSW.js");
     navigator.serviceWorker.ready.then(serviceWorkerRegistration => serviceWorkerRegistration.pushManager.getSubscription()).then(subscription => {
         if (subscription) {
@@ -22,6 +25,7 @@
             document.querySelector("#getnotifications").style.display = "none";
         }
     });
+    }
     function getNotifications() {
         Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
