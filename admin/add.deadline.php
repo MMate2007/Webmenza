@@ -24,9 +24,16 @@ if (isset($_POST["start"])) {
                 $subscription = Subscription::create(json_decode($row[0], true));
                 $webpush->queueNotification($subscription, $payload);
             }
+            $stmt = $mysql->prepare("DELETE FROM `notificationsubscriptions` WHERE `data`->'$.\"endpoint\"' = ?");
+            $stmt->bind_param("s", $endpoint);
             foreach ($webpush->flush() as $result) {
                 if (!$result->isSuccess()) {
-                    Message::addMessage("Értesítés kiküldése sikertelen!", MessageType::danger);
+                    if ($result->isSubscriptionExpired()) {
+                        $endpoint = $result->getEndpoint();
+                        $stmt->execute();
+                    } else {
+                    Message::addMessage("Néhány értesítés kiküldése sikertelen!", MessageType::danger);
+                    }
                 }
             }
         }
