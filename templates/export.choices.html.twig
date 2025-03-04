@@ -1,11 +1,11 @@
 {% extends "adminbase.html.twig" %}
 
 {% block title %}
-    Igénylések exportálása - Webmenza
+    {{ form ? "Igénylőlap" : "Igénylések" }} exportálása - Webmenza
 {% endblock title %}
 
 {% block headtitle %}
-    Igénylések exportálása
+    {{ form ? "Igénylőlap" : "Igénylések" }} exportálása
 {% endblock headtitle %}
 
 {% block content %}
