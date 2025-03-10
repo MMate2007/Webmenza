@@ -22,6 +22,9 @@ function generateSheetForGroup(int $groupId) {
     $weekdays = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
     $weekday = 1;
     $endofweek = [];
+    $dates = [];
+    $days = [];
+    $d = [];
     while ($row = $result->fetch_array()) {
         $date = date_create($row[0]);
         $d[] = $row[0];
