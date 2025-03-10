@@ -45,6 +45,8 @@ main { height: 85% !important; }
 		return window.btoa(binary);
 	}
 
+	let abortController;
+
 	async function autologin(conditional = false) {
 		if (!window.fetch || !navigator.credentials || !navigator.credentials.create) {
 			throw new Error('Browser not supported.');
@@ -56,11 +58,13 @@ main { height: 85% !important; }
 		if (getArgs.success === false) {
 			throw new Error(getArgs.msg);
 		}
-		const abortController = new AbortController();
 		recursiveBase64StrToArrayBuffer(getArgs);
 		if (conditional) {
+		abortController = new AbortController();
 		getArgs.mediation = "conditional";
 		getArgs.signal = abortController.signal;
+		} else {
+			abortController.abort();
 		}
 	
 		const cred = await navigator.credentials.get(getArgs);
