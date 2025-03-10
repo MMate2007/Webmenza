@@ -119,6 +119,14 @@ function generateSheetForGroup(int $groupId) {
         ]
     ];
     $sheet->getStyle("A".$sheet->getHighestDataRow().":".$sheet->getHighestDataColumn().$sheet->getHighestDataRow())->applyFromArray($bottomStyles);
+    $leftStyles = [
+        "borders" => [
+            "left" => [
+                "borderStyle" => Border::BORDER_THICK
+            ]
+        ]
+    ];
+    $sheet->getStyle("A2:"."A".$sheet->getHighestDataRow())->applyFromArray($leftStyles);
     $sideStyles = [
         "borders" => [
             "right" => [
