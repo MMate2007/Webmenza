@@ -38,12 +38,14 @@
         <p>Erre a napra nem igényelhető étkeztetés.</p>
         {% endfor %}
     </div>
+    {% if menu != [] %}
     {% if requests is same as(0) %}
         <p>Erre a napra benyújtottál egy lemondási kérelmet.</p>
     {% endif %}
     <button type="submit" class="btn btn-primary" {% if fillable == false %}disabled{% endif %}><i class="bi bi-floppy"></i> Mentés</button>
     {% if fillable == false and id > 0 and enableModificationRequests %} 
         <a role="button" href="request.modification.php?date={{ date }}" class="btn btn-danger {% if requests is same as(0) %}disabled{% endif %}" {% if requests is same as(0) %}aria-disabled="true"{% endif %}><i class="bi bi-x-lg"></i> Lemondás</a>
+    {% endif %}
     {% endif %}
 </form>
 {% endblock content %}
