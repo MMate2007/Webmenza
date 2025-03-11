@@ -8,7 +8,7 @@ $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $
 $mysql->query("SET NAMES utf8");
 
 function generateSheetForGroup(int $groupId) {
-    global $mysql, $spreadsheet, $menuletters;
+    global $mysql, $spreadsheet, $menuletters, $includeUnregistered;
     $stmt = $mysql->prepare("SELECT `name` FROM `groups` WHERE `id` = ?");
     $stmt->bind_param("i", $groupId);
     $stmt->execute();
@@ -38,7 +38,11 @@ function generateSheetForGroup(int $groupId) {
     $sheet->fromArray([$dates, $days], startCell: "C1");
     $sheet->setCellValue("A2", "#");
     $sheet->setCellValue("B2", "Név");
-    $stmt = $mysql->prepare("SELECT `id`, `name` FROM `users` WHERE `registered` = 1 AND `groupId` = ? ORDER BY `name`");
+    if ($includeUnregistered) {
+        $stmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
+    } else {
+        $stmt = $mysql->prepare("SELECT `id`, `name` FROM `users` WHERE `registered` = 1 AND `groupId` = ? ORDER BY `name`");
+    }
     $stmt->bind_param("i", $groupId);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -48,7 +52,11 @@ function generateSheetForGroup(int $groupId) {
     $users = [];
     while ($row = $result->fetch_array()) {
         $uid = $row[0];
-        $entry = [$counter, $row[1]];
+        $name = $row[1];
+        if (isset($row[2])) {
+            $name .= $row[2] ? "" : " (nem regisztrált)";
+        }
+        $entry = [$counter, $name];
         foreach ($d as $day) {
             $s->execute();
             $res = $s->get_result();
@@ -165,6 +173,7 @@ if (isset($_POST["from"])) {
         $spreadsheet->getSheetByName('Worksheet')
     );
     $spreadsheet->removeSheetByIndex($sheetIndex);
+    $includeUnregistered = $_POST["unregistered"] ?? 0;
     if ($_POST["group"] != "") {
         generateSheetForGroup($_POST["group"]);
     } else {
