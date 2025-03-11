@@ -23,5 +23,5 @@ $stmt = $mysql->prepare("SELECT `date` FROM `menu` LEFT JOIN `deadlines` ON `men
 $stmt->bind_param("i", $_SESSION["userId"]);
 $stmt->execute();
 $nextday = $stmt->get_result()->fetch_row();
-echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu, "modifications" => $modifications, "deadlines" => $deadlines, "days" => fetchDatesForCal(date_create()->format("Y-m")), "nextday" => $nextday, "enableModificationRequests" => $enableModificationRequests]);
+echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu, "modifications" => $modifications, "deadlines" => $deadlines, "days" => fetchDatesForCal(date_create()->format("Y-m")), "nextday" => $nextday, "enableModificationRequests" => $enableModificationRequests, "username" => $_SESSION["name"]]);
 ?>
