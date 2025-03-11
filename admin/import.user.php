@@ -22,6 +22,9 @@ if (isset($_FILES["spreadsheet"])) {
         $id = array_search($row[1], $groups);
         if (!$id) {
             $groupname = $row[1];
+            if (!preg_match("/^[^\/\[\]\?\*\\']*$/", $groupname)) {
+                throw new InvalidArgumentException("Group name cannot contain [ ] / ? * \ ' characters!");
+            }
             $groupstmt->execute();
             $id = $mysql->insert_id;
             $groups[$id] = $row[1];
@@ -35,6 +38,9 @@ if (isset($_FILES["spreadsheet"])) {
     } catch (mysqli_sql_exception $e) {
         $mysql->rollback();
         throw $e;
+    } catch (InvalidArgumentException $e) {
+        $mysql->rollback();
+        Message::addMessage("Az osztály oszlop nem tartalmazhatja a [ ] / ? * \ ' karaktereket!", MessageType::danger);
     }
 }
 echo $twig->render("import.user.html.twig");
