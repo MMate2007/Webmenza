@@ -90,7 +90,8 @@ function generateSheetForGroup(int $groupId) {
             "bold" => true
         ]
     ];
-    $sheet->getStyle("A1:".$sheet->getHighestDataColumn()."2")->applyFromArray($headStyles);
+    $sheet->getStyle("C1:".$sheet->getHighestDataColumn()."2")->applyFromArray($headStyles);
+    $sheet->getStyle("A2:B2")->applyFromArray($headStyles);
     $choiceStyles = [
         "alignment" => [
             "horizontal" => Alignment::HORIZONTAL_CENTER,
