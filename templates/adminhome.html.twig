@@ -10,7 +10,7 @@
 
 {% block content %}
 <p>
-    Nem regisztrált felhasználók: {{ nonreg }}/{{ allreg }} ({{ nonreg / (allreg ? allreg : 1) * 100 }} %)<br>
+    Nem regisztrált felhasználók: {{ nonreg }}/{{ allreg }} ({{ (nonreg / (allreg ? allreg : 1) * 100)|round }} %)<br>
     Regisztrált jelkulcsok: {{ passkeys }} db<br>
     Értesítés-feliratkozások: {{ notis }} db
 </p>
