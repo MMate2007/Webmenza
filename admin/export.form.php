@@ -10,7 +10,7 @@ $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $
 $mysql->query("SET NAMES utf8");
 
 function generateSheetForGroup(int $groupId) {
-    global $mysql, $spreadsheet;
+    global $mysql, $spreadsheet, $includeRegistered, $menuletters;
     $stmt = $mysql->prepare("SELECT `name` FROM `groups` WHERE `id` = ?");
     $stmt->bind_param("i", $groupId);
     $stmt->execute();
@@ -39,24 +39,6 @@ function generateSheetForGroup(int $groupId) {
         $weekday = date_format($date, "N")-1;
     }
     $sheet->fromArray([$dates, $days], startCell: "C1");
-    $sheet->setCellValue([sizeof($days)+3, 2], "Össz (".sizeof($days).")");
-    $sheet->getColumnDimension($sheet->getHighestDataColumn())->setWidth(2, "cm");
-    $osszcolumn = $sheet->getHighestDataColumn();
-    $sheet->setCellValue([sizeof($days)+4, 2], "Aláírás");
-    $sheet->getColumnDimension($sheet->getHighestDataColumn())->setWidth(5, "cm");
-    $sheet->setCellValue("A2", "#");
-    $sheet->setCellValue("B2", "Név");
-    $stmt = $mysql->prepare("SELECT `name` FROM `users` WHERE `registered` = 0 AND `groupId` = ? ORDER BY `name`");
-    $stmt->bind_param("i", $groupId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $counter = 1;
-    $users = [];
-    while ($row = $result->fetch_array()) {
-        $users[] = [$counter, $row[0]];
-        $counter++;
-    }
-    $sheet->fromArray($users, startCell: "A3");
     $headStyles = [
         "alignment" => [
             "horizontal" => Alignment::HORIZONTAL_CENTER,
@@ -72,8 +54,58 @@ function generateSheetForGroup(int $groupId) {
         ]
     ];
     $sheet->getStyle("C1:".$sheet->getHighestDataColumn()."2")->applyFromArray($headStyles);
+    $sheet->setCellValue([sizeof($days)+3, 2], "Össz (".sizeof($days).")");
+    $sheet->getColumnDimension($sheet->getHighestDataColumn())->setWidth(2, "cm");
+    $osszcolumn = $sheet->getHighestDataColumn();
+    $sheet->setCellValue([sizeof($days)+4, 2], "Aláírás");
+    $sheet->getColumnDimension($sheet->getHighestDataColumn())->setWidth(5, "cm");
+    $sheet->setCellValue("A2", "#");
+    $sheet->setCellValue("B2", "Név");
+    if ($includeRegistered) {
+    $stmt = $mysql->prepare("SELECT `name`, `id` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
+    } else {
+    $stmt = $mysql->prepare("SELECT `name`, `id` FROM `users` WHERE `registered` = 0 AND `groupId` = ? ORDER BY `name`");
+    }
+    $stmt->bind_param("i", $groupId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $counter = 1;
+    $users = [];
+    if ($includeRegistered) {
+        $s = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `userId` = ? AND `date` = ?");
+        $s->bind_param("is", $uid, $day);
+    }
+    while ($row = $result->fetch_array()) {
+        $entry = [$counter, $row[0]];
+        if ($includeRegistered) {
+            $uid = $row[1];
+            $name = $row[0];
+            foreach ($d as $day) {
+                $s->execute();
+                $res = $s->get_result();
+                $r = $res->fetch_row();
+                if ($r !== null) {
+                    if ($r[0] === null) {
+                        $menu = "X";
+                    } else {
+                        $menu = $menuletters[$r[0]-1];
+                    }
+                    $entry[] = $menu;
+                } else {
+                    $entry[] = null;
+                }
+            }
+        }
+        $users[] = $entry;
+        $counter++;
+    }
+    $sheet->fromArray($users, startCell: "A3");
     $sheet->getStyle("A2:".$sheet->getHighestDataColumn()."2")->applyFromArray($headStyles);
     $choiceStyles = [
+        "alignment" => [
+            "horizontal" => Alignment::HORIZONTAL_CENTER,
+            "vertical" => Alignment::VERTICAL_CENTER
+        ],
         "borders" => [
             "allBorders" => [
                 "borderStyle" => Border::BORDER_THIN
@@ -162,6 +194,7 @@ if (isset($_POST["from"])) {
         $spreadsheet->getSheetByName('Worksheet')
     );
     $spreadsheet->removeSheetByIndex($sheetIndex);
+    $includeRegistered = $_POST["unregistered"] ?? 0;
     if ($_POST["group"] != "") {
         generateSheetForGroup($_POST["group"]);
     } else {
