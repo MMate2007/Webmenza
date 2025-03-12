@@ -17,6 +17,12 @@ if ($allowedtofill !== null) {
     $allowedtofill = true;
 }
 if (isset($_POST["date"]) && $allowedtofill) {
+    if (!isset($_POST["meal"])) {
+        $stmt = $mysql->prepare("DELETE FROM `choices` WHERE `userId` = ? AND `date` = ?");
+        $stmt->bind_param("is", $_SESSION["userId"], $_POST["date"]);
+        $stmt->execute();
+        Message::addMessage("Választás sikeresen törölve!", MessageType::success);
+    } else {
     $meal = ($_POST["meal"] == "null") ? null : $_POST["meal"];
     $stmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `menuId` = ?");
     $stmt->bind_param("isii", $_SESSION["userId"], $_POST["date"], $meal, $meal);
@@ -30,6 +36,7 @@ if (isset($_POST["date"]) && $allowedtofill) {
         exit;
     } else {
        Message::addMessage("A lista végére értél. Nincs már több dátum.", MessageType::info);
+    }
     }
 }
 if ($allowedtofill === false) {
