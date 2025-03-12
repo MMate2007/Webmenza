@@ -31,7 +31,7 @@
         <div class="form-check">
             <input class="form-check-input" type="radio" name="meal" id="meal-{{ meal.id }}" value="{{ meal.id }}" {% if meal.id == id %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
             <label class="form-check-label" for="meal-{{ meal.id }}">
-              {{ meal.description|nl2br }}
+              {{ meal.id|menuletter }}: {{ meal.description|nl2br }}
             </label>
         </div>
         {% else %}
