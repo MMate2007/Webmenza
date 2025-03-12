@@ -1,0 +1,24 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Határidő - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Határidő
+{% endblock headtitle %}
+
+{% block content %}
+<a href="delete.deadline.php?id={{ deadline.id|e }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
+<p>
+    Első nap: {{ from|date("Y. m. d.") }}<br>
+    Utolsó nap: {{ to|date("Y. m. d.") }}<br>
+    Első kitöltési nap: {{ start|date("Y. m. d.") }}<br>
+    Utolsó kitöltési nap: {{ end|date("Y. m. d.") }}<br>
+</p>
+<h2>Statisztika</h2>
+<p>
+    Menüvel rendelkező napok: {{ days }} db<br>
+    Kitöltöttség aránya: {{ choices }}/{{ users * days }} ({{ (choices / ((users ? users : 1) * (days ? days : 1)) * 100)|round }}%)
+</p>
+{% endblock content %}

@@ -30,7 +30,10 @@
                 <td>{{ deadline.to|date("Y. m. d.") }}</td>
                 <td>{{ deadline.start|date("Y. m. d.") }}</td>
                 <td>{{ deadline.end|date("Y. m. d.") }}</td>
-                <td><a href="delete.deadline.php?id={{ deadline.id|e }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a></td>
+                <td>
+                    <a href="view.deadline.php?id={{ deadline.id|e }}" class="btn btn-primary" role="button"><i class="bi bi-list-columns"></i> Statisztika</a>
+                    <a href="delete.deadline.php?id={{ deadline.id|e }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
