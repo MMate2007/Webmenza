@@ -201,6 +201,7 @@ if (isset($_POST["from"])) {
     $writer->save('php://output');
 } else {
     $groups = $mysql->query("SELECT * FROM `groups`")->fetch_all(MYSQLI_ASSOC);
-    echo $twig->render("export.choices.html.twig", ["groups" => $groups, "from" => $_GET["from"] ?? null, "to" => $_GET["to"] ?? null, "groupId" => $_GET["group"] ?? null]);
+    $dates = $mysql->query("SELECT `from`, `to` FROM `deadlines` WHERE `end` <= CURRENT_DATE ORDER BY `end` DESC, `start` ASC LIMIT 1")->fetch_row();
+    echo $twig->render("export.choices.html.twig", ["groups" => $groups, "from" => $dates[0] ?? null, "to" => $dates[1] ?? null, "groupId" => $_GET["group"] ?? null]);
 }
 ?>
