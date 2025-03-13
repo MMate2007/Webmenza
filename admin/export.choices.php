@@ -37,6 +37,13 @@ function generateSheetForGroup(int $groupId) {
     }
     $sheet->fromArray([$dates, $days], startCell: "C1");
     $sheet->setCellValue("A2", "#");
+    $sheet->setCellValue("B1", $groupName);
+    $sheet->getStyle("B1")->applyFromArray([
+        "alignment" => [
+            "horizontal" => Alignment::HORIZONTAL_CENTER,
+            "vertical" => Alignment::VERTICAL_CENTER
+        ]
+    ]);
     $sheet->setCellValue("B2", "Név");
     if ($includeUnregistered) {
         $stmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
