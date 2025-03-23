@@ -11,9 +11,9 @@ while ($row = $result->fetch_array()) {
 $menu = [];
 if ($dates != null) {
     foreach ($dates as $date) {
-        $stmt = $mysql->prepare("SELECT `id`, `description` FROM `menu` WHERE `date` = ?");
+        $stmt = $mysql->prepare("SELECT `mealId`, `menu`.`id`, `description`, `meals`.`name` FROM `menu` INNER JOIN `meals` ON `meals`.`id` = `mealId` WHERE `date` = ?");
         $stmt->execute([$date]);
-        $menu[$date] = $stmt->get_result()->fetch_all();
+        $menu[$date] = $stmt->get_result()->fetch_all(MYSQLI_BOTH);
     }
 }
 echo $twig->render("list.menu.html.twig", ["menus" => $menu]);

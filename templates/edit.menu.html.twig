@@ -15,6 +15,14 @@
         <input type="date" name="date" id="date" class="form-control col" required readonly value="{{ date }}">
     </div>
     <div class="mb-3 row">
+        <label for="meal" class="form-label col-sm-2">Étkezés:</label>
+        <select name="meal" id="meal" class="form-select col" required disabled>
+            {% for meal in meals %}
+                <option value="{{ meal['id'] }}" {% if meal.id == mealId %}selected{% endif %}>{{ meal['name'] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3 row">
         <label for="date" class="form-label col-sm-2">Menü:</label>
         <textarea name="menu" id="menu" required class="form-control col">{{ menu }}</textarea>
     </div>

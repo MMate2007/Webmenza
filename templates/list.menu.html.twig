@@ -30,6 +30,7 @@
                 <td>
                     <table class="table mb-0">
                         <thead>
+                            <th>Étkezés</th>
                             <th>Menü</th>
                             <th>Étel</th>
                             <th></th>
@@ -37,11 +38,12 @@
                         <tbody>
                             {% for meal in menu %}
                                 <tr>
-                                    <td>{{ meal[0]|menuletter }}</td>
-                                    <td>{{ meal[1]|nl2br }}</td>
+                                    <td>{{ meal.name }}</td>
+                                    <td>{{ meal.id|menuletter }}</td>
+                                    <td>{{ meal.description|nl2br }}</td>
                                     <td>
-                                        <a href="edit.menu.php?date={{ key|escape }}&id={{ meal[0]|escape }}" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i> Szerkesztés</a>
-                                        <a href="delete.menu.php?date={{ key|escape }}&id={{ meal[0]|escape }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
+                                        <a href="edit.menu.php?date={{ key|escape }}&id={{ meal.id|escape }}&mealid={{ meal.mealId|escape }}" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i> Szerkesztés</a>
+                                        <a href="delete.menu.php?date={{ key|escape }}&id={{ meal.id|escape }}&mealid={{ meal.mealId|escape }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
                                     </td>
                                 </tr>
                             {% endfor %}
