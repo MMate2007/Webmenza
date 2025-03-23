@@ -15,19 +15,35 @@ CREATE TABLE `users` (
     FOREIGN KEY (`groupId`) REFERENCES `groups`(`id`) ON DELETE
     SET NULL ON UPDATE CASCADE
 );
+CREATE TABLE `meals` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`name`)
+);
+CREATE TABLE `excludegroupsfrommeals` (
+    `mealId` INT UNSIGNED NOT NULL,
+    `groupId` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`mealId`, `groupId`),
+    FOREIGN KEY (`groupId`) REFERENCES `groups`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`mealId`) REFERENCES `meals`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 CREATE TABLE `menu` (
     `date` DATE NOT NULL,
+    `mealId` INT UNSIGNED NOT NULL,
     `id` INT UNSIGNED NOT NULL,
     `description` TEXT NOT NULL,
-    PRIMARY KEY (`date`, `id`)
+    PRIMARY KEY (`date`, `mealId`, `id`),
+    FOREIGN KEY (`mealId`) REFERENCES `meals`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE `choices` (
     `userId` INT UNSIGNED NOT NULL,
     `date` DATE NOT NULL,
+    `mealId` INT UNSIGNED NOT NULL,
     `menuId` INT UNSIGNED NULL,
-    PRIMARY KEY (`userId`, `date`),
+    PRIMARY KEY (`userId`, `date`, `mealId`),
     FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`date`, `menuId`) REFERENCES `menu`(`date`, `id`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`date`, `mealId`, `menuId`) REFERENCES `menu`(`date`, `mealId`, `id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE `passkeys` (
     `id` VARCHAR(255) NOT NULL,
@@ -53,12 +69,13 @@ CREATE TABLE `deadlines` (
 CREATE TABLE `modifications` (
     `userId` INT UNSIGNED NOT NULL,
     `date` DATE NOT NULL,
+    `mealId` INT UNSIGNED NOT NULL,
     `value` INT UNSIGNED NULL,
     `approved` BOOLEAN NULL DEFAULT NULL,
     `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    UNIQUE KEY (`userId`, `date`),
+    UNIQUE KEY (`userId`, `date`, `mealId`),
     FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`userId`, `date`) REFERENCES `choices`(`userId`, `date`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`userId`, `date`, `mealId`) REFERENCES `choices`(`userId`, `date`, `mealId`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE `notificationsubscriptions` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
