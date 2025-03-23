@@ -1,0 +1,31 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Étkezések - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Étkezések
+{% endblock headtitle %}
+
+{% block content %}
+<a href="add.mealtype.php" class="btn btn-primary" role="button"><i class="bi bi-plus-lg"></i> Étkezés létrehozása</a>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Név</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meal in meals %}
+            <tr>
+                <td>{{ meal[1] }}</td>
+                <td><a href="delete.mealtype.php?id={{ meal[0] }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
