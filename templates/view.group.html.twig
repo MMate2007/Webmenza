@@ -27,7 +27,29 @@
         <a href="export.form.php?group={{ groupId }}" class="btn btn-primary" role="button"><i class="bi bi-file-ruled"></i> Igénylőlap generálása</a>
     </div>
 </div>
+<h3>Étkezések</h3>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Név</th>
+                <th>Igényelhető</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meal in meals %}
+            <tr>
+                <td>{{ meal.name }}</td>
+                <td>{{ meal.allowed ? "igényelhető" : "nem igényelhető" }}</td>
+                <td><a href="setmealforgroup.php?meal={{ meal.id }}&group={{ groupId }}&state={{ meal.allowed ? 0 : 1 }}" class="btn btn-{{ meal.allowed ? "danger" : "success" }}" role="button">{% if meal.allowed %}<i class="bi bi-x-lg"></i> Tiltás{% else %}<i class="bi bi-check-lg"></i> Engedélyezés{% endif %}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
+<h3>Felhasználók</h3>
 <div class="table-responsive">
     <table class="table">
         <thead>

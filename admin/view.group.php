@@ -10,9 +10,10 @@ $groupname = $stmt->get_result()->fetch_row()[0];
 $stmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_array()) {
-    $users[] = $row;
-}
-echo $twig->render("view.group.html.twig", ["users" => $users ?? null, "groupname" => $groupname, "groupId" => $_GET["id"]]);
+$users = $stmt->get_result()->fetch_all();
+$stmt = $mysql->prepare("SELECT `id`, `name`, !EXISTS(SELECT 1 FROM `excludegroupsfrommeals` WHERE `groupId` = ? AND `mealId` = `meals`.`id`) AS `allowed` FROM `meals`");
+$stmt->bind_param("i", $_GET["id"]);
+$stmt->execute();
+$meals = $stmt->get_result()->fetch_all(MYSQLI_BOTH);
+echo $twig->render("view.group.html.twig", ["users" => $users ?? null, "groupname" => $groupname, "groupId" => $_GET["id"], "meals" => $meals ?? null]);
 ?>
