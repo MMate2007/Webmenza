@@ -12,6 +12,7 @@
 <script>
     function resetform() {
         document.querySelector('input[name="meal"]:checked').checked = false;
+        formModified = false;
         document.querySelector("form").submit();
     }
     var formModified = false;
