@@ -14,11 +14,18 @@
         document.querySelector('input[name="meal"]:checked').checked = false;
         document.querySelector("form").submit();
     }
+    var formModified = false;
+    window.addEventListener("beforeunload", function (e) {
+        if (formModified) {
+            e.preventDefault();
+            e.returnValue = true;
+        }
+    });
 </script>
 {% endblock %}
 
 {% block content %}
-<form method="post" action="#">
+<form method="post" action="#" onchange="formModified = true">
     <div class="mb-3">
         <label for="date" class="form-label">Nap:</label>
         <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" onchange="window.location.href = 'set.menu.php?date='+this.value">
