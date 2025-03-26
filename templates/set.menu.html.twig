@@ -11,7 +11,7 @@
 {% block script %}
 <script>
     function resetform() {
-        document.querySelector('input[name="meal"]:checked').checked = false;
+        document.querySelectorAll('input.form-check-input:checked').forEach(i => i.checked = false);
         document.querySelector("form").submit();
     }
 </script>
@@ -24,39 +24,54 @@
         <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" onchange="window.location.href = 'set.menu.php?date='+this.value">
         <div class="d-flex justify-content-center">{% include "_calendar.html.twig" %}</div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Menü:</label>
-    </div>
-    <div class="mb-3">
-        {% if menu != null %}
-        <div class="form-check my-2">
-            <input class="form-check-input" type="radio" name="meal" id="meal-null" value="null" {% if id is same as(null) %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
-            <label class="form-check-label" for="meal-null">
-              Erre a napra nem igénylek étkeztetést.
-            </label>
+    {% if menu != null %}
+    <div class="accordion" id="accordionExample">
+        {% for id, meal in menu %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button {% if meal.menu == null %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#meal-{{ id }}" {% if meal.menu != null %}aria-expanded="true"{% endif %} aria-controls="meal-{{ id }}">
+              {{ meal.mealName }}
+            </button>
+          </h2>
+          <div id="meal-{{ id }}" class="accordion-collapse collapse {% if meal.menu != null %}show{% endif %}" data-bs-parent="#accordionExample">
+            <div class="mb-3">
+                <label class="form-label">Menü:</label>
+            </div>
+            <div class="accordion-body">
+                {% if meal.menu != [] %}
+                <div class="form-check my-2">
+                    <input class="form-check-input" type="radio" name="meal-{{ id }}" id="meal-{{ id }}-null" value="null" {% if choices[id] is same as(null) and choices[id] is defined %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
+                    <label class="form-check-label" for="meal-{{ id }}-null">
+                      Erre a napra nem igénylek étkeztetést.
+                    </label>
+                </div>
+                {% endif %}
+                {% for item in meal.menu %}
+                <div class="form-check my-2">
+                    <input class="form-check-input" type="radio" name="meal-{{ id }}" id="meal-{{ id }}-{{ item.id }}" value="{{ item.id }}" {% if item.id == choices[id] %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
+                    <label class="form-check-label" for="meal-{{ id }}-{{ item.id }}">
+                      {{ item.id|menuletter }}: {{ item.description|nl2br }}
+                    </label>
+                </div>
+                {% else %}
+                <p>Ezen a napon ez az étkezés nem vehető igénybe.</p>
+                {% endfor %}
+                {% if id in requests %}
+                <p>Erre az étkezésre benyújtottál egy lemondási kérelmet.</p>
+                {% endif %}
+                {% if fillable == false and choices[id] > 0 and enableModificationRequests %} 
+                    <a role="button" href="request.modification.php?date={{ date }}&meal={{ id }}" class="btn btn-danger {% if id in requests %}disabled{% endif %}" {% if id in requests %}aria-disabled="true"{% endif %}><i class="bi bi-x-lg"></i> Lemondás</a>
+                {% endif %}
+            </div>
+          </div>
         </div>
-        {% endif %}
-        {% for meal in menu %}
-        <div class="form-check my-2">
-            <input class="form-check-input" type="radio" name="meal" id="meal-{{ meal.id }}" value="{{ meal.id }}" {% if meal.id == id %} checked {% endif %} {% if fillable == false %}disabled{% endif %}>
-            <label class="form-check-label" for="meal-{{ meal.id }}">
-              {{ meal.id|menuletter }}: {{ meal.description|nl2br }}
-            </label>
-        </div>
-        {% else %}
-        <p>Erre a napra nem igényelhető étkeztetés.</p>
         {% endfor %}
     </div>
-    {% if menu != [] %}
-    {% if requests is same as(0) %}
-        <p>Erre a napra benyújtottál egy lemondási kérelmet.</p>
     {% endif %}
+    {% if menu != [] %}
     <button type="submit" class="btn btn-primary" {% if fillable == false %}disabled{% endif %}><i class="bi bi-floppy"></i> Mentés</button>
     {% if fillable %}
     <button type="button" class="btn btn-outline-danger" onclick="resetform()">Választás törlése</button>
-    {% endif %}
-    {% if fillable == false and id > 0 and enableModificationRequests %} 
-        <a role="button" href="request.modification.php?date={{ date }}" class="btn btn-danger {% if requests is same as(0) %}disabled{% endif %}" {% if requests is same as(0) %}aria-disabled="true"{% endif %}><i class="bi bi-x-lg"></i> Lemondás</a>
     {% endif %}
     {% endif %}
 </form>
