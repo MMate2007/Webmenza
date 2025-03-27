@@ -49,8 +49,10 @@ function fetchDatesForCal(string|null $month = null, int|null $userId = null): a
     $dates = [];
     $menustmt = $mysql->prepare("SELECT DISTINCT 1 FROM `menu` WHERE `date` = ? AND `mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?)");
     $menustmt->bind_param("si", $date, $userId);
-    $choicestmt = $mysql->prepare("SELECT CASE WHEN `menuId` > 0 THEN TRUE WHEN `menuId` IS NULL THEN FALSE END FROM `choices` WHERE `userId` = ? AND `date` = ?");
-    $choicestmt->bind_param("is", $userId, $date);
+    $mealcountstmt = $mysql->prepare("SELECT COUNT(DISTINCT `mealId`) FROM `menu` WHERE `menu`.`date` = ? AND `menu`.`mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?)");
+    $mealcountstmt->bind_param("si", $date, $userId);
+    $choicestmt = $mysql->prepare("SELECT CASE WHEN COUNT(`mealId`) < ? THEN NULL WHEN COUNT(`menuId`) = 0 THEN FALSE WHEN COUNT(`menuId`) > 0 THEN TRUE END FROM `choices` WHERE `userId` = ? AND `date` = ? AND `mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?)");
+    $choicestmt->bind_param("iisi", $count, $userId, $date, $userId);
     foreach ($days as $day) {
         $date = $day->format("Y-m-d");
         $menustmt->execute();
@@ -58,6 +60,8 @@ function fetchDatesForCal(string|null $month = null, int|null $userId = null): a
         $res2 = null;
         if ($res != null) {
             $res = $res[0];
+            $mealcountstmt->execute();
+            $count = $mealcountstmt->get_result()->fetch_row()[0];
             $choicestmt->execute();
             $res2 = $choicestmt->get_result()->fetch_row();
             if ($res2 != null) {
