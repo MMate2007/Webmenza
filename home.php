@@ -19,8 +19,8 @@ $stmt = $mysql->prepare("SELECT `from`, `to`, `end`, COUNT(`choices`.`date`) AS 
 $stmt->bind_param("i", $_SESSION["userId"]);
 $stmt->execute();
 $deadlines = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt = $mysql->prepare("SELECT `date` FROM `menu` LEFT JOIN `deadlines` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` WHERE ((CURDATE() BETWEEN `start` AND `end`) OR `start` IS NULL) AND NOT EXISTS (SELECT 1 FROM `choices` WHERE `choices`.`date` = `menu`.`date` AND `userId` = ?) LIMIT 1");
-$stmt->bind_param("i", $_SESSION["userId"]);
+$stmt = $mysql->prepare("SELECT `date` FROM `menu` LEFT JOIN `deadlines` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` WHERE ((CURDATE() BETWEEN `start` AND `end`) OR `start` IS NULL) AND NOT EXISTS (SELECT 1 FROM `choices` WHERE `choices`.`date` = `menu`.`date` AND `choices`.`mealId` = `menu`.`mealId` AND `userId` = ?) AND `mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?) ORDER BY `menu`.`date` LIMIT 1");
+$stmt->bind_param("ii", $_SESSION["userId"], $_SESSION["userId"]);
 $stmt->execute();
 $nextday = $stmt->get_result()->fetch_row();
 echo $twig->render("home.html.twig", ["todayMenu" => $todayMenu, "modifications" => $modifications, "deadlines" => $deadlines, "days" => fetchDatesForCal(date_create()->format("Y-m")), "nextday" => $nextday, "enableModificationRequests" => $enableModificationRequests, "username" => $_SESSION["name"]]);
