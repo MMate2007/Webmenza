@@ -48,7 +48,7 @@ function fetchDatesForCal(string|null $month = null, int|null $userId = null): a
     $days = new DatePeriod($start, $interval, $end);
     $dates = [];
     $menustmt = $mysql->prepare("SELECT DISTINCT 1 FROM `menu` WHERE `date` = ? AND `mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?)");
-    $menustmt->bind_param("si", $date, $_SESSION["userId"]);
+    $menustmt->bind_param("si", $date, $userId);
     $choicestmt = $mysql->prepare("SELECT CASE WHEN `menuId` > 0 THEN TRUE WHEN `menuId` IS NULL THEN FALSE END FROM `choices` WHERE `userId` = ? AND `date` = ?");
     $choicestmt->bind_param("is", $userId, $date);
     foreach ($days as $day) {
