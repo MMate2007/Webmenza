@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" action="#" onchange="formModified = true">
+<form method="post" action="#" onchange="formModified = true" onsubmit="formModified = false">
     <div class="mb-3">
         <label for="date" class="form-label">Nap:</label>
         <input type="date" name="date" id="date" class="form-control" required value="{{ date }}" onchange="window.location.href = 'set.menu.php?date='+this.value">
