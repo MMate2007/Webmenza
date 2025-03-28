@@ -21,7 +21,6 @@ if (isset($_POST["date"]) && $allowedtofill) {
     $stmt->bind_param("is", $_SESSION["userId"], $_POST["date"]);
     $stmt->execute();
     $meals = $stmt->get_result();
-    // echo var_dump($meals->fetch_all(MYSQLI_ASSOC));
     $delstmt = $mysql->prepare("DELETE FROM `choices` WHERE `userId` = ? AND `date` = ? AND `mealId` = ?");
     $addstmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `mealId`, `menuId`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `menuId` = ?");
     while ($row = $meals->fetch_array()) {
