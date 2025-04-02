@@ -15,8 +15,8 @@ $modifications = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 } else {
     $modifications = false;
 }
-$stmt = $mysql->prepare("SELECT `from`, `to`, `end`, COUNT(`choices`.`date`) AS `choices`, COUNT(`menu`.`date`) AS `dates` FROM `deadlines` LEFT JOIN `menu` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` LEFT JOIN `choices` ON `choices`.`date` = `menu`.`date` AND `choices`.`userId` = ? WHERE CURRENT_DATE BETWEEN `start` AND `end` GROUP BY `deadlines`.`id` ORDER BY `deadlines`.`end`");
-$stmt->bind_param("i", $_SESSION["userId"]);
+$stmt = $mysql->prepare("SELECT `from`, `to`, `end`, COUNT(DISTINCT `choices`.`date`, `choices`.`mealId`) AS `choices`, COUNT(DISTINCT `menu`.`date`, `menu`.`mealId`) AS `dates` FROM `deadlines` LEFT JOIN `menu` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` AND `menu`.`mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?) LEFT JOIN `choices` ON `choices`.`date` = `menu`.`date` AND `choices`.`userId` = ? WHERE CURRENT_DATE BETWEEN `start` AND `end` GROUP BY `deadlines`.`id` ORDER BY `deadlines`.`end`");
+$stmt->bind_param("ii", $_SESSION["userId"], $_SESSION["userId"]);
 $stmt->execute();
 $deadlines = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt = $mysql->prepare("SELECT `date` FROM `menu` LEFT JOIN `deadlines` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` WHERE ((CURDATE() BETWEEN `start` AND `end`) OR `start` IS NULL) AND NOT EXISTS (SELECT 1 FROM `choices` WHERE `choices`.`date` = `menu`.`date` AND `choices`.`mealId` = `menu`.`mealId` AND `userId` = ?) AND `mealId` NOT IN (SELECT `mealId` FROM `excludegroupsfrommeals` INNER JOIN `users` ON `users`.`groupId` = `excludegroupsfrommeals`.`groupId` AND `users`.`id` = ?) ORDER BY `menu`.`date` LIMIT 1");
