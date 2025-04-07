@@ -19,6 +19,6 @@
 <h2>Statisztika</h2>
 <p>
     Menüvel rendelkező napok: {{ days }} db<br>
-    Kitöltöttség aránya: {{ choices }}/{{ users * days }} ({{ (choices / ((users ? users : 1) * (days ? days : 1)) * 100)|round }}%)
+    Kitöltöttség aránya: {{ choices }}/{{ possible }} ({{ (choices / (possible ? possible : 1) * 100)|round }}%)
 </p>
 {% endblock content %}
