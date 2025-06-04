@@ -1,0 +1,20 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Automatikus évfolyamléptetés - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Automatikus évfolyamléptetés
+{% endblock headtitle %}
+
+{% block content %}
+<form method="post" action="#">
+    <div class="mb-3 row">
+        <label for="order" class="form-label col-sm-2">Léptetési sorrend:</label>
+        <input type="text" name="order" id="order" class="form-control col" required>
+        <label class="form-text col">Pontosvesszővel elválasztva az évfolyamelőtagok az osztályjelöléstől elválasztó karakterrel együtt. Pl.: 9ny.;9.;10.;11.;12.</label>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
+</form>
+{% endblock content %}
