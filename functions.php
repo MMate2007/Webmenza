@@ -78,6 +78,7 @@ function deletePastData(): void {
     $mysql->query("SET NAMES utf8");
     $mysql->query("DELETE FROM `menu` WHERE `date` < CURRENT_DATE - INTERVAL ".$deletePastDataAfter);
     $mysql->query("DELETE FROM `deadlines` WHERE `to` < CURRENT_DATE - INTERVAL $deletePastDataAfter AND `end` < CURRENT_DATE - INTERVAL $deletePastDataAfter");
+    $mysql->query("DELETE FROM `choices` WHERE `date` < CURRENT_DATE - INTERVAL ".$deletePastDataAfter);
     $mysql->close();
 }
 
