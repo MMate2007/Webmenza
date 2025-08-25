@@ -1,5 +1,6 @@
 <?php
 require_once "../config.php";
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 authUser(1);
 if (isset($_FILES["spreadsheet"])) {
     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($_FILES["spreadsheet"]["tmp_name"]);
@@ -17,6 +18,10 @@ if (isset($_FILES["spreadsheet"])) {
     $stmt = $mysql->prepare("INSERT INTO `menu`(`date`, `id`, `description`) VALUES (?,?,?)");
     $stmt->bind_param("sis", $date, $id, $description);
     foreach ($rowGenerator as $row) {
+        if (strtotime($row[5])) {
+        if ($row[0] !== $row[5]) {
+            throw new Exception("Érvénytelen adatokkal rendelkező táblázat! Valamelyik sorban a két dátum nem egyezik!");
+        } }
         if ($row[$astart] != null && $row[$astart+1] != null)
 {        $date = date_format(date_create($row[0]), "Y-m-d");
         $id = 1;
@@ -33,6 +38,10 @@ if (isset($_FILES["spreadsheet"])) {
     } catch (mysqli_sql_exception $e) {
         $mysql->rollback();
         throw $e;
+    } catch (Exception $e) {
+        $mysql->rollback();
+        Message::addMessage($e->getMessage(), MessageType::danger);
+        Message::addMessage("Az importálás közben fellépő hibák miatt az importálás sikertelen.", MessageType::danger);
     }
 }
 echo $twig->render("import.menu.html.twig");
