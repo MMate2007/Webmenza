@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Menü megosztása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Menü megosztása
+{% endblock headtitle %}
+
+{% block script %}
+<script>
+    function copycode() {
+        var code = document.getElementById("code");
+        navigator.clipboard.writeText(code.innerText);
+        document.getElementById("copybutton").innerHTML = '<i class="bi bi-clipboard-check"></i> Másolva';
+    }
+</script>
+{% endblock script %}
+
+{% block content %}
+<p>Küldd el ezt a kódot annak, akivel meg szeretnéd osztani választásaidat.</p>
+<p>Ez a kód csak azokat a napokat tartalmazza, amelyre kértél étkeztetést.<br>Ebben a kódban csak a nap dátuma, illetve a választott menü azonosítója van, más személyes adatot nem tartalmaz.</p>
+<p><code id="code">{{data}}</code></p>
+<button class="btn btn-primary" onclick="copycode()" id="copybutton"><i class="bi bi-clipboard"></i> Másolás a vágólapra</button>
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Menü megosztása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Menü megosztása
+{% endblock headtitle %}
+
+{% block script %}
+<script>
+    function copycode() {
+        var code = document.getElementById("code");
+        navigator.clipboard.writeText(code.innerText);
+        document.getElementById("copybutton").innerHTML = '<i class="bi bi-clipboard-check"></i> Másolva';
+    }
+    function showsend() {
+        document.getElementById("send").style.display = "block";
+        document.getElementById("import").style.display = "none";
+        document.getElementById("showsend").classList.add("active");
+        document.getElementById("showimport").classList.remove("active");
+    }
+    function showimport() {
+        document.getElementById("send").style.display = "none";
+        document.getElementById("import").style.display = "block";
+        document.getElementById("showsend").classList.remove("active");
+        document.getElementById("showimport").classList.add("active");
+    }
+</script>
+{% endblock script %}
+
+{% block content %}
+{% if data %}
+<code id="code">{{data}}</code>
+<button class="btn btn-primary" onclick="copycode()" id="copybutton"><i class="bi bi-clipboard"></i> Másolás a vágólapra</button>
+{% endif %}
+<ul class="nav nav-underline nav-fill">
+  <li class="nav-item">
+    <a class="nav-link active" href="#" onclick="showsend()" id="showsend">Küldés</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" onclick="showimport()" id="showimport">Fogadás</a>
+  </li>
+</ul>
+<div id="send" style="margin-top: 10px;">
+    <form action="#" method="get">
+        <div class="mb-3 row">
+            <label for="from" class="form-label col-sm-2">Első nap:</label>
+            <input type="date" name="from" id="from" class="form-control col" required>
+        </div>
+        <div class="mb-3 row">
+            <label for="to" class="form-label col-sm-2">Utolsó nap:</label>
+            <input type="date" name="to" id="to" class="form-control col" required>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-share-fill"></i> Kód generálása</button>
+    </form>
+</div>
+<div id="import" style="display: none; margin-top: 10px;">
+    <form action="#" method="post">
+        <label for="data" class="form-label">Kód:</label>
+        <textarea name="data" id="data" class="form-control"></textarea>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-eye"></i> Importálás előnézete</button>
+    </form>
+</div>
+{% endblock content %}

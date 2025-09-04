@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Menü megosztása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Menü megosztása
+{% endblock headtitle %}
+
+{% block content %}
+<h2>Importálandó napok</h2>
+<p>A jelölőnégyzettel bepipált napok kerülnek csak importálásra.</p>
+<p>Amennyiben van olyan nap, amely felülírja a már meglévő választásodat, ott a jelölőnégyzet alapértelmezetten nincs bepipálva, így nem írja felül az importálás a te választásodat.</p>
+<form action="#" method="post">
+    <input type="hidden" name="data" value="{{data}}">
+    <input type="hidden" name="import" value="import">
+    <div class="responsive-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nap</th>
+                    <th>Menü</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date, menu in proposal %}
+                    <tr>
+                        <td><input type="checkbox" name="dates[]" id="date{{date}}" class="form-check-input" value="{{date}}" {{ menu[1] ? "" : "checked" }}></td>
+                        <td>{{date|date("Y. m. d.")}}</td>
+                        <td>
+                            {% if menu[1] %}
+                                <p><s>{{menu[1]}}</s></p>
+                            {% endif %}
+                            <p>{{menu[0]}}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-down"></i> Importálás</button>
+</form>
+{% endblock content %}
