@@ -8,7 +8,7 @@ if (isset($_GET["date"]))
 {
     $date = $_GET["date"];
 }
-$stmt = $mysql->prepare("SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE ? BETWEEN `from` AND `to`");
+$stmt = $mysql->prepare("SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE ? BETWEEN `from` AND `to` ORDER BY `fillable` DESC");
 $stmt->execute([$date]);
 $allowedtofill = $stmt->get_result()->fetch_row();
 if ($allowedtofill !== null) {
