@@ -20,8 +20,16 @@ if (isset($_POST["name"])) {
     $registered = $_POST["registered"] ?? 0;
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
     $statement->bind_param("ssii", $_POST["name"], $password, $group, $registered);
-    $result = $statement->execute();
-    if ($result) {
+    try {
+    $statement->execute();
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() === 1062) {
+            Message::addMessage("Ilyen nevű felhasználó már létezik a csoportban!", MessageType::danger);
+        } else {
+            throw $e;
+        }
+    }
+    if (!$statement->errno) {
         Message::addMessage("Felhasználó sikeresen létrehozva!", MessageType::success);
     }
 }
