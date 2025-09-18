@@ -21,4 +21,25 @@
     Menüvel rendelkező napok: {{ days }} db<br>
     Kitöltöttség aránya: {{ choices }}/{{ users * days }} ({{ (choices / ((users ? users : 1) * (days ? days : 1)) * 100)|round }}%)
 </p>
+<h2>Csoportstatisztika</h2>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Csoport</th>
+                <th>Kitöltési arány</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groupchoices %}
+            <tr>
+                <td>{{ group.groupName }}</td>
+                <td>
+                    {{ group.choicesCount }}/{{ group.groupMembersCount * days }} ({{ (group.choicesCount / ((group.groupMembersCount ? group.groupMembersCount : 1) * (days ? days : 1)) * 100)|round }}%)
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock content %}
