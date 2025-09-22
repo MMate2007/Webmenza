@@ -50,7 +50,17 @@ if (isset($_GET["from"]) && isset($_GET["to"])) {
             if (in_array($entry["date"], $dates)) {
                 $date = $entry["date"];
                 $menuId = $entry["menuId"];
+                $fillstmt = $mysql->prepare("SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE ? BETWEEN `from` AND `to` ORDER BY `fillable` DESC");
+                $fillstmt->execute([$date]);
+                $allowedtofill = $fillstmt->get_result()->fetch_row();
+                if ($allowedtofill !== null) {
+                    $allowedtofill = (bool)$allowedtofill[0];
+                } else if ($allowedtofill === null) {
+                    $allowedtofill = true;
+                }
+                if ($allowedtofill) {
                 $stmt->execute();
+                }
             }
         }
         $mysql->commit();
