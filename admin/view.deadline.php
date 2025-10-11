@@ -16,7 +16,7 @@ $stmt = $mysql->prepare("SELECT COUNT(*) FROM `choices` INNER JOIN `deadlines` O
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $choices = $stmt->get_result()->fetch_row()[0];
-$stmt = $mysql->prepare("SELECT `groups`.`name` AS `groupName`, `groups`.`id` AS `groupId`, COUNT(`choices`.`date`) AS `choicesCount` FROM `choices` RIGHT JOIN `users` ON `users`.`id` = `choices`.`userId` RIGHT JOIN `groups` ON `groups`.`id` = `users`.`groupId` WHERE ((`date` BETWEEN (SELECT `from` FROM `deadlines` WHERE `deadlines`.`id` = ?) AND (SELECT `to` FROM `deadlines` WHERE `deadlines`.`id` = ?)) OR `date` IS NULL) AND `registered` = 1 AND `groups`.`name` NOT LIKE '\_%' GROUP BY `groups`.`id` ORDER BY `choicesCount`, `groups`.`name`");
+$stmt = $mysql->prepare("SELECT `groups`.`name` AS `groupName`, `groups`.`id` AS `groupId`, COUNT(`choices`.`date`) AS `choicesCount` FROM `choices` RIGHT JOIN `users` ON `users`.`id` = `choices`.`userId` RIGHT JOIN `groups` ON `groups`.`id` = `users`.`groupId` WHERE ((`date` BETWEEN (SELECT `from` FROM `deadlines` WHERE `deadlines`.`id` = ?) AND (SELECT `to` FROM `deadlines` WHERE `deadlines`.`id` = ?)) OR `date` IS NULL) AND `registered` = 1 AND `groups`.`name` NOT LIKE '\_%' GROUP BY `groups`.`id` ORDER BY `groups`.`name`");
 $stmt->bind_param("ii", $_GET["id"], $_GET["id"]);
 $stmt->execute();
 $groupchoicesres = $stmt->get_result();
@@ -31,5 +31,14 @@ while ($row = $groupchoicesres->fetch_array()) {
         "groupMembersCount" => $groupmemberscount[$row["groupId"]]
     ];
 }
+$groupchoicessort = function ($a, $b) {
+    $apercentage = $a["choicesCount"] / ($a["groupMembersCount"] ? $a["groupMembersCount"] : 1);
+    $bpercentage = $b["choicesCount"] / ($b["groupMembersCount"] ? $b["groupMembersCount"] : 1);
+    if ($apercentage == $bpercentage) {
+        return 0;
+    }
+    return ($apercentage < $bpercentage) ? -1 : 1;
+};
+usort($groupchoices, $groupchoicessort);
 echo $twig->render("view.deadline.html.twig", ["from" => $data[0], "to" => $data[1], "start" => $data[2], "end" => $data[3], "days" => $days, "users" => $users, "choices" => $choices, "groupchoices" => $groupchoices]);
 ?>
