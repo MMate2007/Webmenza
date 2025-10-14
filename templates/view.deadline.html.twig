@@ -35,7 +35,7 @@
             <tr>
                 <td>{{ group.groupName }}</td>
                 <td>
-                    {{ group.choicesCount }}/{{ group.groupMembersCount * days }} ({{ (group.choicesCount / ((group.groupMembersCount ? group.groupMembersCount : 1) * (days ? days : 1)) * 100)|round }}%)
+                    {{ (group.choicesCount / ((group.groupMembersCount ? group.groupMembersCount : 1) * (days ? days : 1)) * 100)|round }}% ({{ group.choicesCount }}/{{ group.groupMembersCount * days }})
                 </td>
             </tr>
             {% endfor %}
