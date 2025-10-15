@@ -1,0 +1,54 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Igénylések - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Igénylések
+{% endblock headtitle %}
+
+{% block customstyle %}
+td.sticky, th.sticky {
+	position: sticky;
+	left: -2px;
+    /*background-image: linear-gradient(to right, rgba(var(--bs-body-bg), 0),rgba(var(--bs-body-bg), 0.8),rgba(var(--bs-body-bg), 0.9),rgb(var(--bs-body-bg)));*/
+}
+{% endblock customstyle %}
+
+{% block content %}
+<form action="#" method="get">
+    <div class="mb-3 row">
+        <label for="from" class="form-label col">Első nap:</label>
+        <input type="date" name="from" id="from" class="form-control col" required value="{{ from|escape }}">
+        <label for="to" class="form-label col">Utolsó nap:</label>
+        <input type="date" name="to" id="to" class="form-control col" required value="{{ to|escape }}">
+        <button type="submit" class="btn btn-primary col">Lekérdezés</button>
+    </div>
+</form>
+{% for group in data %}
+<h2>{{ group.name }}</h2>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered table-sm">
+        <thead>
+            <tr>
+                <th scope="col" class="sticky">{{ group.name }}</th>
+                {% for date in dates %}
+                    <td>{{date|date("j")}}</td>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for user in group.users %}
+                <tr>
+                    <th scope="row" class="sticky">{{ user.name }} {{ user.registered ? "" : "(nem regisztrált)" }}</th>
+                    {% for choiceletter in user.choiceletters %}
+                        <td>{{ choiceletter }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endfor %}
+{% endblock content %}
