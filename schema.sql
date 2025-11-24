@@ -67,6 +67,32 @@ CREATE TABLE `notificationsubscriptions` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
+CREATE TABLE `surveys` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` TINYTEXT NOT NULL,
+    `description` TEXT NULL,
+    `from` DATE NOT NULL,
+    `to` DATE NOT NULL,
+    `anonim` BOOLEAN NOT NULL DEFAULT TRUE,
+    `questions` JSON NOT NULL,
+    PRIMARY KEY (`id`)
+);
+CREATE TABLE `surveyanswers` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `surveyId` INT UNSIGNED NOT NULL,
+    `answers` JSON NOT NULL,
+    PRIMARY KEY (`id`, `surveyId`),
+    FOREIGN KEY (`surveyId`) REFERENCES `surveys`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE `surveysubmits` (
+    `userId` INT UNSIGNED NOT NULL,
+    `surveyId` INT UNSIGNED NOT NULL,
+    `answerId` INT UNSIGNED NULL,
+    PRIMARY KEY (`userId`, `surveyId`),
+    FOREIGN KEY (`surveyId`) REFERENCES `surveys`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`answerId`, `surveyId`) REFERENCES `surveyanswers`(`id`, `surveyid`) ON DELETE CASCADE ON UPDATE CASCADE
+);
 INSERT INTO `groups` (`id`, `name`)
 VALUES (1, '_admin'),
     (2, '_manager');
