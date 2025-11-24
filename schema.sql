@@ -74,7 +74,7 @@ CREATE TABLE `surveys` (
     `from` DATE NOT NULL,
     `to` DATE NOT NULL,
     `anonim` BOOLEAN NOT NULL DEFAULT TRUE,
-    `questions` JSON NOT NULL,
+    `questions` JSON NOT NULL DEFAULT (JSON_ARRAY()),
     PRIMARY KEY (`id`)
 );
 CREATE TABLE `surveyanswers` (
