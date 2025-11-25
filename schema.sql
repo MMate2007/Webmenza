@@ -71,13 +71,13 @@ CREATE TABLE `surveys` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` TINYTEXT NOT NULL,
     `description` TEXT NULL,
-    `from` DATE NOT NULL,
-    `to` DATE NOT NULL,
+    `start` DATE NOT NULL,
+    `end` DATE NOT NULL,
     `anonim` BOOLEAN NOT NULL DEFAULT TRUE,
     `questions` JSON NOT NULL DEFAULT (JSON_ARRAY()),
     PRIMARY KEY (`id`),
     CHECK (
-        `from` <= `to`
+        `start` <= `end`
     )
 );
 CREATE TABLE `surveyanswers` (
