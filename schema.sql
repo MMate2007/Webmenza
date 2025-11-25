@@ -75,7 +75,10 @@ CREATE TABLE `surveys` (
     `to` DATE NOT NULL,
     `anonim` BOOLEAN NOT NULL DEFAULT TRUE,
     `questions` JSON NOT NULL DEFAULT (JSON_ARRAY()),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CHECK (
+        `from` <= `to`
+    )
 );
 CREATE TABLE `surveyanswers` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
