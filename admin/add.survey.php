@@ -9,7 +9,7 @@ if (isset($_POST["title"])) {
     $query->bind_param("ssssi", $_POST["title"], $_POST["description"], $_POST["start"], $_POST["end"], $anonim);
     if ($query->execute()) {
         Message::addMessage("Kérdőív létrehozása sikeres!", MessageType::success);
-        header("Location: add.question.survey.php?id=".$mysql->insert_id);
+        header("Location: edit.survey.php?id=".$mysql->insert_id);
     }
 }
 echo $twig->render("add.survey.html.twig");

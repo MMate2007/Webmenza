@@ -1,0 +1,309 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+{{ title|escape }} kérdőív szerkesztése - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+{{ title|escape }} kérdőív szerkesztése
+{% endblock headtitle %}
+
+{% block content %}
+<template id="questionCard">
+  <div class="card mb-3">
+    <div class="card-header d-flex justify-content-between">
+      <span>Kérdés</span>
+      <span>
+        <button id="deleteQuestionButton" class="btn btn-outline-danger"><i class="bi bi-trash3"></i> Törlés</button>
+      </span>
+    </div>
+    <div class="card-body">
+      <h3 class="card-title" id="question"></h3>
+      <p id="description"></p>
+      <div id="container"></div>
+    </div>
+  </div>
+</template>
+<template id="ratingCardBody">
+      <div class="row align-items-center">
+        <div class="col" style="text-align:right;">
+          <span id="worstOptionLabel"></span>
+        </div>
+        <div class="col mx-auto text-center">
+          <div>
+            <input type="radio" class="btn-check" name="rating" id="1" autocomplete="off" value="1">
+            <label class="btn" for="1">1</label>
+            <input type="radio" class="btn-check" name="rating" id="2" autocomplete="off" value="2">
+            <label class="btn" for="2">2</label>
+            <input type="radio" class="btn-check" name="rating" id="3" autocomplete="off" value="3">
+            <label class="btn" for="3">3</label>
+            <input type="radio" class="btn-check" name="rating" id="4" autocomplete="off" value="4">
+            <label class="btn" for="4">4</label>
+            <input type="radio" class="btn-check" name="rating" id="5" autocomplete="off" value="5">
+            <label class="btn" for="5">5</label>
+          </div>
+        </div>
+        <div class="col">
+          <span id="bestOptionLabel"></span>
+        </div>
+      </div>
+</template>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ratingModal"><i
+    class="bi bi-star-half"></i> Értékelés</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#textModal"><i
+    class="bi bi-input-cursor-text"></i> Rövid szöveg</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#textareaModal"><i
+    class="bi bi-justify-left"></i> Hosszú szöveg</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#numberModal"><i
+    class="bi bi-123"></i> Szám</button>
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="ratingModalLabel"><i class="bi bi-star-half"></i> Értékelés típusú kérdés
+          hozzáadása</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="ratingForm">
+          <fieldset>
+            <legend>Kérdés adatai</legend>
+            <div class="mb-3 row">
+              <label for="title" class="form-label col-sm-2">Cím:</label>
+              <input type="text" name="title" id="title" class="form-control col" required>
+            </div>
+            <div class="mb-3 row">
+              <label for="description" class="form-label col-sm-2">Leírás:</label>
+              <textarea name="description" id="description" class="form-control col"></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="1" id="required" name="required">
+              <label class="form-check-label" for="required">
+                Kötelező
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Válasz</legend>
+            <div class="row align-items-center">
+              <div class="col">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="worstOption" placeholder="nagyon rossz"
+                    style="text-align:right;" name="worstOption" value="nagyon rossz">
+                  <label for="worstOption">Legrosszabb lehetőség</label>
+                </div>
+              </div>
+              <div class="col mx-auto text-center">
+                <div>
+                  <input type="radio" class="btn-check" name="rating" id="1" autocomplete="off" value="1">
+                  <label class="btn" for="1">1</label>
+                  <input type="radio" class="btn-check" name="rating" id="2" autocomplete="off" value="2">
+                  <label class="btn" for="2">2</label>
+                  <input type="radio" class="btn-check" name="rating" id="3" autocomplete="off" value="3">
+                  <label class="btn" for="3">3</label>
+                  <input type="radio" class="btn-check" name="rating" id="4" autocomplete="off" value="4">
+                  <label class="btn" for="4">4</label>
+                  <input type="radio" class="btn-check" name="rating" id="5" autocomplete="off" value="5">
+                  <label class="btn" for="5">5</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="bestOption" placeholder="nagyon jó" name="bestOption"
+                    value="nagyon jó">
+                  <label for="bestOption">Legjobb lehetőség</label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick='addRatingQuestion("#ratingForm")'><i
+            class="bi bi-plus-lg"></i> Hozzáadás</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="textModal" tabindex="-1" aria-labelledby="textModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="textModalLabel"><i class="bi bi-input-cursor-text"></i> Rövid szöveg típusú
+          kérdés hozzáadása</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="textForm">
+          <fieldset>
+            <legend>Kérdés adatai</legend>
+            <div class="mb-3 row">
+              <label for="title" class="form-label col-sm-2">Cím:</label>
+              <input type="text" name="title" id="title" class="form-control col" required>
+            </div>
+            <div class="mb-3 row">
+              <label for="description" class="form-label col-sm-2">Leírás:</label>
+              <textarea name="description" id="description" class="form-control col"></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="1" id="required" name="required">
+              <label class="form-check-label" for="required">
+                Kötelező
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Válasz</legend>
+            <input type="text" class="form-control">
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick='addTextQuestion("#textForm")'><i
+            class="bi bi-plus-lg"></i> Hozzáadás</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="textareaModal" tabindex="-1" aria-labelledby="textareaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="textareaModalLabel"><i class="bi bi-justify-left"></i> Hosszú szöveg típusú
+          kérdés hozzáadása</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="longTextForm">
+          <fieldset>
+            <legend>Kérdés adatai</legend>
+            <div class="mb-3 row">
+              <label for="title" class="form-label col-sm-2">Cím:</label>
+              <input type="text" name="title" id="title" class="form-control col" required>
+            </div>
+            <div class="mb-3 row">
+              <label for="description" class="form-label col-sm-2">Leírás:</label>
+              <textarea name="description" id="description" class="form-control col"></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="1" id="required" name="required">
+              <label class="form-check-label" for="required">
+                Kötelező
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Válasz</legend>
+            <textarea class="form-control"></textarea>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick='addLongTextQuestion("#longTextForm")'><i
+            class="bi bi-plus-lg"></i> Hozzáadás</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="numberModal" tabindex="-1" aria-labelledby="numberModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="numberModalLabel"><i class="bi bi-123"></i> Szám típusú kérdés hozzáadása</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="numberForm">
+          <fieldset>
+            <legend>Kérdés adatai</legend>
+            <div class="mb-3 row">
+              <label for="title" class="form-label col-sm-2">Cím:</label>
+              <input type="text" name="title" id="title" class="form-control col" required>
+            </div>
+            <div class="mb-3 row">
+              <label for="description" class="form-label col-sm-2">Leírás:</label>
+              <textarea name="description" id="description" class="form-control col"></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="1" id="required" name="required">
+              <label class="form-check-label" for="required">
+                Kötelező
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Válasz</legend>
+            <input type="number" class="form-control">
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick='addNumberQuestion("#numberForm")'><i
+            class="bi bi-plus-lg"></i> Hozzáadás</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<h2>{{ title }}</h2>
+<p>{{ description }}</p>
+<div id="surveyContent">
+
+</div>
+<script>
+  var questions = [];
+  function renderSurvey() {
+    var surveyContent = document.getElementById("surveyContent");
+    var questionCardTemplate = document.getElementById("questionCard");
+    var ratingTemplate = document.getElementById("ratingCardBody");
+    for (var [index, question] of questions.entries()) {
+      switch (question.type) {
+        case "rating":
+          var newQuestionUI = questionCardTemplate.content.cloneNode(true);
+          newQuestionUI.getElementById("question").innerHTML = index+1 + ": " + question.title;
+          newQuestionUI.getElementById("description").innerHTML = question.description;
+          newQuestionUI.getElementById("container").appendChild(ratingTemplate.content.cloneNode(true));
+          newQuestionUI.getElementById("worstOptionLabel").innerHTML = question.worstOption;
+          newQuestionUI.getElementById("bestOptionLabel").innerHTML = question.bestOption;
+          newQuestionUI.querySelectorAll("input[name='rating']").forEach((i) => { i.required = question.required; i.setAttribute("name", "rating-"+index); });
+          surveyContent.appendChild(newQuestionUI);
+          break;
+      }
+    }
+  }
+  function deleteQuestion(id) {
+    
+  }
+  function addRatingQuestion(formId) {
+    var question = Object.fromEntries(new FormData(document.querySelector(formId)));
+    question.type = "rating";
+    delete question.rating;
+    questions.push(question);
+    renderSurvey();
+  }
+  function addTextQuestion(formId) {
+    var question = Object.fromEntries(new FormData(document.querySelector(formId)));
+    question.type = "text";
+    questions.push(question);
+    renderSurvey();
+  }
+  function addLongTextQuestion(formId) {
+    var question = Object.fromEntries(new FormData(document.querySelector(formId)));
+    question.type = "textarea";
+    questions.push(question);
+    renderSurvey();
+  }
+  function addNumberQuestion(formId) {
+    var question = Object.fromEntries(new FormData(document.querySelector(formId)));
+    question.type = "number";
+    questions.push(question);
+    renderSurvey();
+  }
+</script>
+{% endblock content %}
