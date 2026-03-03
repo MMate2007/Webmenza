@@ -3,7 +3,7 @@ require_once "config.php";
 authUser();
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
-if ($_POST != null) {
+if (isset($_POST["reset"])) {
     $autochoice = [];
     foreach($_POST as $name => $value) {
         if ($name == "reset") continue;
@@ -19,6 +19,9 @@ if ($_POST != null) {
     if ($insertstmt->execute()) {
         Message::addMessage("Sikeres módosítás!", MessageType::success);
     }
+}
+if (isset($_POST["from"]) && isset($_POST["to"])) {
+    autochoice($_POST["from"], $_POST["to"], [$_SESSION["userId"]]);
 }
 $getsettingsstmt = $mysql->prepare("SELECT `ac`.* FROM `users`, JSON_TABLE(`autochoice`, '$' COLUMNS (
 	`0` INT PATH '$.\"0\"',

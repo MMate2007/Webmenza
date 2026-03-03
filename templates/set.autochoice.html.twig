@@ -82,4 +82,17 @@
 </form>
 <h3>Futtatás most</h3>
 <p>Lehetőséged van az automata kitöltő algoritmust most rögtön is futtatni a lent meghatározott időszakra.</p>
+<form action="#" method="post">
+    <div class="mb-3 row">
+        <label for="from" class="form-label col">Első nap:</label>
+        <input type="date" name="from" id="from" class="form-control col" required>
+    </div>
+    <div class="mb-3 row">
+        <label for="to" class="form-label col">Utolsó nap:</label>
+        <input type="date" name="to" id="to" class="form-control col" required>
+    </div>
+    <div class="mb-3 row">
+        <button type="submit" class="btn btn-primary col">Futtatás</button>
+    </div>
+</form>
 {% endblock content %}
