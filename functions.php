@@ -82,6 +82,71 @@ function deletePastData(): void {
     $mysql->close();
 }
 
+function autochoice(string $from, string $to, array $userIds): array {
+    global $dbcred;
+    $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
+    $mysql->query("SET NAMES utf8");
+    $getsettingsstmt = $mysql->prepare("SELECT `ac`.* FROM `users`, JSON_TABLE(`autochoice`, '$' COLUMNS (
+	`0` INT PATH '$.\"0\"',
+    `1` INT PATH '$.\"1\"',
+    `2` INT PATH '$.\"2\"',
+    `3` INT PATH '$.\"3\"',
+    `4` INT PATH '$.\"4\"',
+    `5` INT PATH '$.\"5\"',
+    `6` INT PATH '$.\"6\"'
+    )) `ac` WHERE `id` = ?;");
+    $getsettingsstmt->bind_param("i", $uid);
+    $menustmt = $mysql->prepare("SELECT `date`, JSON_ARRAYAGG(`id`) AS `menuitems` FROM `menu` WHERE (SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE `date` BETWEEN `from` AND `to` ORDER BY `fillable` DESC) IS NOT FALSE AND `date` BETWEEN ? AND ? GROUP BY `date`");
+    $menustmt->bind_param("ss", $from, $to);
+    $menustmt->execute();
+    $menuresult = $menustmt->get_result();
+    $menu = [];
+    while ($row = $menuresult->fetch_array()) {
+        $menu[] = [
+            "date" => new DateTime($row["date"]),
+            "menu" => json_decode($row["menuitems"], true)
+        ];
+    }
+    $mysql->begin_transaction();
+    $nullstmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) VALUES (?,?,NULL) ON DUPLICATE KEY UPDATE `userId`=`userId`");
+    $nullstmt->bind_param("is", $uid, $date);
+    $randomchoicestmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) SELECT ?, `menu`.`date`, `id` FROM `menu` WHERE `menu`.`date` = ? ORDER BY RAND() LIMIT 1 ON DUPLICATE KEY UPDATE `userId`=`userId`");
+    $randomchoicestmt->bind_param("is", $uid, $date);
+    $stats = [0,0]; //[felhasználók száma, igénylések száma]
+    try {
+        foreach($userIds as $uid) {
+            $getsettingsstmt->execute();
+            $settings = $getsettingsstmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            if ($settings == null) {
+                continue;
+            }
+            $settings = $settings[0];
+            $haverun = false;
+            foreach ($menu as $day) {
+                $date = $day["date"]->format("Y-m-d");
+                if ($settings[$day["date"]->format("N")-1] == false) {
+                    $nullstmt->execute();
+                } else if ($settings[$day["date"]->format("N")-1] == 1) {
+                    $randomchoicestmt->execute();
+                }
+                if ($mysql->affected_rows == 1) {
+                    $haverun = true;
+                    $stats[1]++;
+                }
+            }
+            if ($haverun == true) { $stats[0]++; }
+        }
+        $mysql->commit();
+        Message::addMessage("Automata választás funkció futtatása sikeres!", MessageType::success);
+        Message::addMessage("$stats[0] felhasználót és $stats[1] új igénylést érintett.", MessageType::info);
+    } catch (mysqli_sql_exception $e) {
+        $mysql->rollback();
+        throw $e;
+    }
+    $mysql->close();
+    return $stats;
+}
+
 function authUser(int $adminLevel = 0, bool $allownonregistered = false): void {
     deletePastData();
     if (!isset($_SESSION["userId"])) {
