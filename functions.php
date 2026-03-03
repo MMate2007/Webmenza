@@ -82,7 +82,7 @@ function deletePastData(): void {
     $mysql->close();
 }
 
-function autochoice(string $from, string $to, array $userIds): array {
+function autochoice(string $from, string $to, array $userIds, bool $ignoreDeadlines = false): array {
     global $dbcred;
     $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
     $mysql->query("SET NAMES utf8");
@@ -96,7 +96,11 @@ function autochoice(string $from, string $to, array $userIds): array {
     `6` INT PATH '$.\"6\"'
     )) `ac` WHERE `id` = ?;");
     $getsettingsstmt->bind_param("i", $uid);
-    $menustmt = $mysql->prepare("SELECT `date`, JSON_ARRAYAGG(`id`) AS `menuitems` FROM `menu` WHERE (SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE `date` BETWEEN `from` AND `to` ORDER BY `fillable` DESC) IS NOT FALSE AND `date` BETWEEN ? AND ? GROUP BY `date`");
+    if ($ignoreDeadlines === false) {
+        $menustmt = $mysql->prepare("SELECT `date`, JSON_ARRAYAGG(`id`) AS `menuitems` FROM `menu` WHERE (SELECT CASE WHEN CURDATE() BETWEEN `start` AND `end` THEN TRUE ELSE FALSE END AS `fillable` FROM `deadlines` WHERE `date` BETWEEN `from` AND `to` ORDER BY `fillable` DESC) IS NOT FALSE AND `date` BETWEEN ? AND ? GROUP BY `date`");
+    } else if ($ignoreDeadlines === true) {
+        $menustmt = $mysql->prepare("SELECT `date`, JSON_ARRAYAGG(`id`) AS `menuitems` FROM `menu` WHERE `date` BETWEEN ? AND ? GROUP BY `date`");
+    }
     $menustmt->bind_param("ss", $from, $to);
     $menustmt->execute();
     $menuresult = $menustmt->get_result();
