@@ -1,0 +1,30 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Automatikus kitöltés - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Automatikus kitöltés
+{% endblock headtitle %}
+
+{% block content %}
+<form method="post" action="#">
+    <div class="mb-3 row">
+        <label for="from" class="form-label col-sm-2">Első nap:</label>
+        <input type="date" name="from" id="from" class="form-control col" required value="{{ from }}">
+    </div>
+    <div class="mb-3 row">
+        <label for="to" class="form-label col-sm-2">Utolsó nap:</label>
+        <input type="date" name="to" id="to" class="form-control col" required value="{{ to }}">
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="1" id="ignoredeadlines" name="ignoredeadlines" checked>
+        <label class="form-check-label" for="ignoredeadlines">
+          Határidők figyelmen kívül hagyása
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Futtatás</button>
+</form>
+
+{% endblock content %}
