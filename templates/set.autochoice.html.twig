@@ -20,10 +20,10 @@
 
 {% block content %}
 <p>Az alábbiakban megadhatot, hogy ha nem töltöd ki a menzaigénylést, akkor a rendszer mit tegyen. A rendszer képes rögzíteni, hogy egy adott napon nem kérsz ebédet, vagy akár választhat véletszerűen a menük közül.<br><b>Ha már egy adott napra rögzítettél valamit, akkor az nem kerül felülírásra!</b></p>
-<p><b>Fontos! Előfordulhat, hogy a rendszer üzemeltetője nem állítja be a folyamat automatikus futtatását. Ez azt jelenti, hogy ez a funkció nem garantálja a biztos kitöltést!</b></p>
+<p><b>Fontos! Előfordulhat, hogy a rendszer üzemeltetője nem futtatja az automata kitöltés funkciót. Ez azt jelenti, hogy ez a funkció nem garantálja a biztos kitöltést!</b></p>
 <form action="#" method="post">
     <div class="mb-3 row align-items-center">
-        <label class="col-2">Hétfő:</label>
+        <label class="col-3">Hétfő:</label>
         <div class="btn-group col" role="group" aria-label="Hétfő">
             <input type="radio" class="btn-check" name="d0" id="d00" autocomplete="off" value=0 {{ (settings[0] is same as 0) ? "checked" }}>
             <label class="btn btn-outline-danger" for="d00">Nem kérek</label>
@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="mb-3 row align-items-center">
-        <label class="col-2">Kedd:</label>
+        <label class="col-3">Kedd:</label>
         <div class="btn-group col" role="group" aria-label="Kedd">
             <input type="radio" class="btn-check" name="d1" id="d10" autocomplete="off" value=0 {{ (settings[1] is same as 0) ? "checked" }}>
             <label class="btn btn-outline-danger" for="d10">Nem kérek</label>
@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="mb-3 row align-items-center">
-        <label class="col-2">Szerda:</label>
+        <label class="col-3">Szerda:</label>
         <div class="btn-group col" role="group" aria-label="Szerda">
             <input type="radio" class="btn-check" name="d2" id="d20" autocomplete="off" value=0 {{ (settings[2] is same as 0) ? "checked" }}>
             <label class="btn btn-outline-danger" for="d20">Nem kérek</label>
@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="mb-3 row align-items-center">
-        <label class="col-2">Csütörtök:</label>
+        <label class="col-3">Csütörtök:</label>
         <div class="btn-group col" role="group" aria-label="Csütörtök">
             <input type="radio" class="btn-check" name="d3" id="d30" autocomplete="off" value=0 {{ (settings[3] is same as 0) ? "checked" }}>
             <label class="btn btn-outline-danger" for="d30">Nem kérek</label>
@@ -59,7 +59,7 @@
         </div>
     </div>
     <div class="mb-3 row align-items-center">
-        <label class="col-2">Péntek:</label>
+        <label class="col-3">Péntek:</label>
         <div class="btn-group col" role="group" aria-label="Péntek">
             <input type="radio" class="btn-check" name="d4" id="d40" autocomplete="off" value=0 {{ (settings[4] is same as 0) ? "checked" }}>
             <label class="btn btn-outline-danger" for="d40">Nem kérek</label>
@@ -68,7 +68,7 @@
         </div>
     </div>
     <div class="mb-3 row align-items-center">
-        <label class="col-2">Szombat:</label>
+        <label class="col-3">Szombat:</label>
         <div class="btn-group col" role="group" aria-label="Szombat">
             <input type="radio" class="btn-check" name="d5" id="d50" autocomplete="off" value=0 {{ (settings[5] is same as 0) ? "checked" }}>
             <label class="btn btn-outline-danger" for="d50">Nem kérek</label>
@@ -77,11 +77,16 @@
         </div>
     </div>
     <input type="hidden" name="reset" id="reset" value="0">
-    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
-    <button type="button" class="btn btn-outline-danger" onclick="resetform()">Kikapcsolás</button>
+    <div class="d-flex justify-content-center">
+        <div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
+            <button type="button" class="btn btn-outline-danger" onclick="resetform()"><i class="bi bi-x-lg"></i> Kikapcsolás</button>
+        </div>
+    </div>
 </form>
 <h3>Futtatás most</h3>
-<p>Lehetőséged van az automata kitöltő algoritmust most rögtön is futtatni a lent meghatározott időszakra.</p>
+<p>Lehetőséged van az automata kitöltő algoritmust most is futtatni a lent meghatározott időszakra.</p>
+<p><i>A rendszer a határidőket figyelembe veszi!</i></p>
 <form action="#" method="post">
     <div class="mb-3 row">
         <label for="from" class="form-label col">Első nap:</label>
@@ -91,8 +96,6 @@
         <label for="to" class="form-label col">Utolsó nap:</label>
         <input type="date" name="to" id="to" class="form-control col" required>
     </div>
-    <div class="mb-3 row">
-        <button type="submit" class="btn btn-primary col">Futtatás</button>
-    </div>
+    <div class="d-flex justify-content-center"><button type="submit" class="btn btn-primary"><i class="bi bi-gear-fill"></i> Futtatás</button></div>
 </form>
 {% endblock content %}
