@@ -10,6 +10,7 @@ CREATE TABLE `users` (
     `password` VARCHAR(255) NOT NULL,
     `groupId` INT UNSIGNED NULL DEFAULT NULL,
     `registered` BOOLEAN NOT NULL DEFAULT FALSE,
+    `autochoice` JSON NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY (`name`, `groupId`),
     FOREIGN KEY (`groupId`) REFERENCES `groups`(`id`) ON DELETE

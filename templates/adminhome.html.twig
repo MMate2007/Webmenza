@@ -12,7 +12,8 @@
 <p>
     Nem regisztrált felhasználók: {{ nonreg }}/{{ allreg }} ({{ (nonreg / (allreg ? allreg : 1) * 100)|round }} %)<br>
     Regisztrált jelkulcsok: {{ passkeys }} db<br>
-    Értesítés-feliratkozások: {{ notis }} db
+    Értesítés-feliratkozások: {{ notis }} db<br>
+    Automata kitöltést igényelt: {{ autochoice }} fő ({{ (autochoice / (allreg ? allreg : 1) * 100)|round }} %)
 </p>
 <div class="card">
     <div class="card-body">
@@ -27,6 +28,13 @@
       <h5 class="card-title">Évfolyamléptetés</h5>
       <p class="card-text">Minden osztály léptetése automatikusan a következő évfolyamba.</p>
       <a href="automigrate.php" class="card-link">Automatikus évfolyamléptetés</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Automatikus kitöltés</h5>
+      <p class="card-text">Automatikus kitöltés funkció futtatása</p>
+      <a href="run.autochoice.php" class="card-link">Automatikus kitöltés</a>
     </div>
 </div>
 {% endblock content %}
