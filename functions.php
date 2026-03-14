@@ -93,7 +93,8 @@ function autochoice(string $from, string $to, array $userIds, bool $ignoreDeadli
     `3` INT PATH '$.\"3\"',
     `4` INT PATH '$.\"4\"',
     `5` INT PATH '$.\"5\"',
-    `6` INT PATH '$.\"6\"'
+    `6` INT PATH '$.\"6\"',
+    `onlyWhenEmpty` BOOL PATH '$.\"onlyWhenEmpty\"'
     )) `ac` WHERE `id` = ?;");
     $getsettingsstmt->bind_param("i", $uid);
     if ($ignoreDeadlines === false) {
@@ -116,6 +117,8 @@ function autochoice(string $from, string $to, array $userIds, bool $ignoreDeadli
     $nullstmt->bind_param("is", $uid, $date);
     $randomchoicestmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) SELECT ?, `menu`.`date`, `id` FROM `menu` WHERE `menu`.`date` = ? ORDER BY RAND() LIMIT 1 ON DUPLICATE KEY UPDATE `userId`=`userId`");
     $randomchoicestmt->bind_param("is", $uid, $date);
+    $emptystmt = $mysql->prepare("SELECT COUNT(*) AS `choiceCount` FROM `choices` WHERE `userId` = ? AND `date` BETWEEN ? AND ?");
+    $emptystmt->bind_param("iss", $uid, $from, $to);
     $stats = [0,0]; //[felhasználók száma, igénylések száma]
     try {
         foreach($userIds as $uid) {
@@ -125,6 +128,13 @@ function autochoice(string $from, string $to, array $userIds, bool $ignoreDeadli
                 continue;
             }
             $settings = $settings[0];
+            if ($settings["onlyWhenEmpty"] == true) {
+                $emptystmt->execute();
+                $choiceCount = $emptystmt->get_result()->fetch_all(MYSQLI_ASSOC)[0]["choiceCount"];
+                if ($choiceCount > 0) {
+                    continue;
+                }
+            }
             $haverun = false;
             foreach ($menu as $day) {
                 $date = $day["date"]->format("Y-m-d");

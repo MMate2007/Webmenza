@@ -7,7 +7,15 @@ if (isset($_POST["reset"])) {
     $autochoice = [];
     foreach($_POST as $name => $value) {
         if ($name == "reset") continue;
+        if ($name == "onlywhenempty") continue;
         $autochoice[$name[1]] = (int)$value;
+    }
+    if ($autochoice != null) {
+        if (!isset($_POST["onlywhenempty"])) {
+            $autochoice["onlyWhenEmpty"] = false;
+        } else if ($_POST["onlywhenempty"] == 1) {
+            $autochoice["onlyWhenEmpty"] = true;
+        }
     }
     $insertstmt = $mysql->prepare("UPDATE `users` SET `autochoice`=? WHERE `id` = ?");
     if ($autochoice == null) {
@@ -30,7 +38,8 @@ $getsettingsstmt = $mysql->prepare("SELECT `ac`.* FROM `users`, JSON_TABLE(`auto
     `3` INT PATH '$.\"3\"',
     `4` INT PATH '$.\"4\"',
     `5` INT PATH '$.\"5\"',
-    `6` INT PATH '$.\"6\"'
+    `6` INT PATH '$.\"6\"',
+    `onlyWhenEmpty` BOOL PATH '$.\"onlyWhenEmpty\"'
 )) `ac` WHERE `id` = ?;");
 $getsettingsstmt->bind_param("i", $_SESSION["userId"]);
 $getsettingsstmt->execute();
