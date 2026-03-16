@@ -1,0 +1,65 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Automatikus kitöltés előnézete - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Automatikus kitöltés előnézete
+{% endblock headtitle %}
+
+{% block customstyle %}
+td.sticky, th.sticky {
+	position: sticky;
+	left: -2px;
+    /*background-image: linear-gradient(to right, rgba(var(--bs-body-bg), 0),rgba(var(--bs-body-bg), 0.8),rgba(var(--bs-body-bg), 0.9),rgb(var(--bs-body-bg)));*/
+}
+{% endblock customstyle %}
+
+{% block content %}
+<p><i>Mentéskor a véletlenszerűen generált választások változhatnak!</i></p>
+<p>A módosítás {{ stats[0] }} felhasználót és {{ stats[1] }} új igénylést érintene.</p>
+<form method="post" action="run.autochoice.php">
+    <div class="mb-3 row">
+        <label for="from" class="form-label col-sm-2">Első nap:</label>
+        <input type="date" name="from" id="from" class="form-control col" required value="{{ from }}" readonly>
+    </div>
+    <div class="mb-3 row">
+        <label for="to" class="form-label col-sm-2">Utolsó nap:</label>
+        <input type="date" name="to" id="to" class="form-control col" required value="{{ to }}" readonly>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="1" id="ignoredeadlines" name="ignoredeadlines" readonly {{ ignoreDeadlines ? "checked" }} onclick="return false;">
+        <label class="form-check-label" for="ignoredeadlines">
+          Határidők figyelmen kívül hagyása
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Futtatás</button>
+</form>
+
+{% for group in data %}
+<h2>{{ group.name }}</h2>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered table-sm">
+        <thead>
+            <tr>
+                <th scope="col" class="sticky">{{ group.name }}</th>
+                {% for date in dates %}
+                    <td>{{date|date("j")}}</td>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for user in group.users %}
+                <tr>
+                    <th scope="row" class="sticky{{ (user.id in usersEnabledAutochoice) ? ' bg-success' }}">{{ user.name }} {{ user.registered ? "" : "(nem regisztrált)" }}</th>
+                    {% for choice in user.choiceletters %}
+                        <td {{ choice.modified ? "class='bg-warning'" }}>{{ choice.choice }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endfor %}
+{% endblock content %}
