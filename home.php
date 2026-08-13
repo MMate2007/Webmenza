@@ -15,7 +15,7 @@ $modifications = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 } else {
     $modifications = false;
 }
-$stmt = $mysql->prepare("SELECT `from`, `to`, `end`, COUNT(`choices`.`date`) AS `choices`, COUNT(`menu`.`date`) AS `dates` FROM `deadlines` LEFT JOIN `menu` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` LEFT JOIN `choices` ON `choices`.`date` = `menu`.`date` AND `choices`.`userId` = ? WHERE CURRENT_DATE BETWEEN `start` AND `end` GROUP BY `deadlines`.`id` ORDER BY `deadlines`.`end`");
+$stmt = $mysql->prepare("SELECT `from`, `to`, `end`, COUNT(DISTINCT `choices`.`date`) AS `choices`, COUNT(DISTINCT `menu`.`date`) AS `dates` FROM `deadlines` LEFT JOIN `menu` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` LEFT JOIN `choices` ON `choices`.`date` = `menu`.`date` AND `choices`.`userId` = ? WHERE CURRENT_DATE BETWEEN `start` AND `end` GROUP BY `deadlines`.`id` ORDER BY `deadlines`.`end`");
 $stmt->bind_param("i", $_SESSION["userId"]);
 $stmt->execute();
 $deadlines = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
