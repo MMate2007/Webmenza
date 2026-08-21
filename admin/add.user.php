@@ -9,7 +9,7 @@ $result = $mysql->query("SELECT * FROM `groups`");
 while ($row = $result->fetch_assoc()) {
     $groups[] = $row;
 }
-$result = $mysql->query("SELECT * FROM `diets`");
+$result = $mysql->query("SELECT * FROM `diets` ORDER BY `id`");
 while ($row = $result->fetch_assoc()) {
     $diets[] = $row;
 }
