@@ -31,6 +31,14 @@
             {% endfor %}
         </select>
     </div>
+    <div class="mb-3 row">
+        <label for="diet" class="form-label col-sm-2">Étrend:</label>
+        <select name="diet" id="diet" class="form-select col" required>
+            {% for diet in diets %}
+                <option value="{{ diet['id'] }}" {% if post.diet == diet['id'] %} selected {% endif %}>{{ diet['name'] }}</option>
+            {% endfor %}
+        </select>
+    </div>
     <div class="form-check mb-3">
         <input class="form-check-input" type="checkbox" value="1" id="registered" name="registered">
         <label class="form-check-label" for="registered">
