@@ -24,6 +24,7 @@
             <tr>
                 <th>Név</th>
                 <th>Csoport</th>
+                <th>Étrend</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,7 @@
             <tr>
                 <td><a href="view.user.php?id={{ user[0] }}">{{ user[1] }}</a>{% if user[3] == 0 %} (nem regisztrált){% endif %}</td>
                 <td>{{ user[2] }}</td>
+                <td>{{user[4]}}</td>
             </tr>
             {% endfor %}
         </tbody>
