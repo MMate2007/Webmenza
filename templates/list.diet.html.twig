@@ -17,17 +17,12 @@
         <thead>
             <tr>
                 <th>Név</th>
-                <th>Műveletek</th>
             </tr>
         </thead>
         <tbody>
             {% for diet in diets %}
             <tr>
-                <td>{{ diet[1] }}</td>
-                <td>
-                    <a href="edit.diet.php?id={{ diet[0] }}" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i> Szerkesztés</a>
-                    <a href="delete.diet.php?id={{ diet[0] }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
-                </td>
+                <td><a href="view.diet.php?id={{ diet[0] }}">{{ diet[1] }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
