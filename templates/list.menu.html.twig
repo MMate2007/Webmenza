@@ -31,6 +31,7 @@
                     <table class="table mb-0">
                         <thead>
                             <th>Menü</th>
+                            <th>Étrend</th>
                             <th>Étel</th>
                             <th></th>
                         </thead>
@@ -38,6 +39,7 @@
                             {% for meal in menu %}
                                 <tr>
                                     <td>{{ meal[0]|menuletter }}</td>
+                                    <td>{{ meal[2] }}</td>
                                     <td>{{ meal[1]|nl2br }}</td>
                                     <td>
                                         <a href="edit.menu.php?date={{ key|escape }}&id={{ meal[0]|escape }}" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i> Szerkesztés</a>
