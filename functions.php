@@ -47,8 +47,12 @@ function fetchDatesForCal(string|null $month = null, int|null $userId = null): a
     $interval = new DateInterval('P1D');
     $days = new DatePeriod($start, $interval, $end);
     $dates = [];
-    $menustmt = $mysql->prepare("SELECT DISTINCT 1 FROM `menu` WHERE `date` = ?");
-    $menustmt->bind_param("s", $date);
+    $dietidstmt = $mysql->prepare("SELECT `dietId` FROM `users` WHERE `id` = ?");
+    $dietidstmt->bind_param("i", $userId);
+    $dietidstmt->execute();
+    $dietid = $dietidstmt->get_result()->fetch_column();
+    $menustmt = $mysql->prepare("SELECT DISTINCT 1 FROM `menudiets` WHERE `menuDate` = ? AND `dietId` = ?");
+    $menustmt->bind_param("si", $date, $dietid);
     $choicestmt = $mysql->prepare("SELECT CASE WHEN `menuId` > 0 THEN TRUE WHEN `menuId` IS NULL THEN FALSE END FROM `choices` WHERE `userId` = ? AND `date` = ?");
     $choicestmt->bind_param("is", $userId, $date);
     foreach ($days as $day) {
