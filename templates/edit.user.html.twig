@@ -35,7 +35,7 @@
         <label for="diet" class="form-label col-sm-2">Étrend:</label>
         <select name="diet" id="diet" class="form-select col" required>
             {% for diet in diets %}
-                <option value="{{ diet['id'] }}" {% if user['diet'] == diet['id'] %} selected {% endif %}>{{ diet['name'] }}</option>
+                <option value="{{ diet['id'] }}" {% if user[3] == diet['id'] %} selected {% endif %}>{{ diet['name'] }}</option>
             {% endfor %}
         </select>
     </div>
