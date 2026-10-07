@@ -14,8 +14,6 @@ RUN openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj \
 WORKDIR /etc/apache2/sites-available
 COPY ./conf/apache /etc/apache2/sites-available
 RUN a2ensite dev
-WORKDIR /usr/local/etc/php/conf.d 
-COPY ./conf/php /usr/local/etc/php/conf.d 
 WORKDIR /var/www/html
 EXPOSE 80
 EXPOSE 443
