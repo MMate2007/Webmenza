@@ -2,6 +2,7 @@
 require_once "../config.php";
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 authUser(1);
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
@@ -16,6 +17,12 @@ function generateSheetForGroup(int $groupId) {
     $sheet = $spreadsheet->createSheet();
     $sheet->setTitle($groupName);
     $sheet->getDefaultColumnDimension()->setWidth(0.70, "cm");
+    $sheet->getPageSetup()
+        ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
+        ->setPaperSize(PageSetup::PAPERSIZE_A4)
+        ->setFitToPage(true)
+        ->setFitToWidth(1)
+        ->setFitToHeight(1);
     $stmt = $mysql->prepare("SELECT DISTINCT `date` FROM `menu` WHERE `date` BETWEEN ? AND ? ORDER BY `date`");
     $stmt->execute([$_POST["from"], $_POST["to"]]);
     $result = $stmt->get_result();
