@@ -3,7 +3,7 @@ require_once "config.php";
 authUser();
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
-$nextdatestmt = $mysql->prepare("SELECT `date` FROM `menu` LEFT JOIN `deadlines` ON `menu`.`date` BETWEEN `deadlines`.`from` AND `deadlines`.`to` WHERE `date` > ? AND ((CURDATE() BETWEEN `start` AND `end`) OR `start` IS NULL) LIMIT 1");
+$nextdatestmt = $mysql->prepare("SELECT `menuDate` FROM `menudiets` LEFT JOIN `deadlines` ON `menudiets`.`menuDate` BETWEEN `deadlines`.`from` AND `deadlines`.`to` WHERE `menuDate` > ? AND ((CURDATE() BETWEEN `start` AND `end`) OR `start` IS NULL) AND `dietId` IN (SELECT `dietId` FROM `users` WHERE `users`.`id` = ?) LIMIT 1");
 if (isset($_GET["date"]))
 {
     $date = $_GET["date"];
@@ -29,7 +29,7 @@ if (isset($_POST["date"]) && $allowedtofill) {
     if ($stmt->execute()) {
         Message::addMessage("Választás sikeresen mentve!", MessageType::success);
     }
-    $nextdatestmt->execute([$_POST["date"]]);
+    $nextdatestmt->execute([$_POST["date"], $_SESSION["userId"]]);
     $row = $nextdatestmt->get_result()->fetch_row();
     if ($row !== null) {
         header("Location: set.menu.php?date=".$row[0]);
@@ -54,8 +54,8 @@ $stmt->bind_param("si", $date, $_SESSION["userId"]);
 $stmt->execute();
 $choice = $stmt->get_result()->fetch_row();
 if ($choice !== null) $choice = $choice[0]; else $choice = 0;
-$stmt = $mysql->prepare("SELECT `id`, `description` FROM `menu` WHERE `date` = ?");
-$stmt->execute([$date]);
+$stmt = $mysql->prepare("SELECT `id`, `description` FROM `menu` INNER JOIN `menudiets` ON `menu`.`date` = `menudiets`.`menuDate` AND `menu`.`id` = `menudiets`.`menuId` WHERE `date` = ? AND `dietId` IN (SELECT `dietId` FROM `users` WHERE `users`.`id` = ?)");
+$stmt->execute([$date, $_SESSION["userId"]]);
 $menu = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 echo $twig->render("set.menu.html.twig", ["date" => $date, "id" => $choice, "menu" => $menu ?? null, "fillable" => $allowedtofill, "requests" => $requests ?? null, "days" => fetchDatesForCal(date_create($date)->format("Y-m")), "enableModificationRequests" => $enableModificationRequests]);
 ?>
