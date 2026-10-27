@@ -40,8 +40,8 @@ if (isset($_POST["from"]) && isset($_POST["to"])) {
         $mysql->begin_transaction();
         $nullstmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) VALUES (?,?,NULL) ON DUPLICATE KEY UPDATE `userId`=`userId`");
         $nullstmt->bind_param("is", $uid, $date);
-        $randomchoicestmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) SELECT ?, `menu`.`date`, `id` FROM `menu` WHERE `menu`.`date` = ? ORDER BY RAND() LIMIT 1 ON DUPLICATE KEY UPDATE `userId`=`userId`");
-        $randomchoicestmt->bind_param("is", $uid, $date);
+        $randomchoicestmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) SELECT ?, `menu`.`date`, `menu`.`id` FROM `menudiets` INNER JOIN `menu` ON `menudiets`.`menuDate` = `menu`.`date` AND `menudiets`.`menuId` = `menu`.`id` WHERE `menudiets`.`dietId` IN (SELECT `users`.`dietId` FROM `users` WHERE `users`.`id` = ?) AND `menu`.`date` = ? ORDER BY RAND() LIMIT 1 ON DUPLICATE KEY UPDATE `userId`=`userId`");
+        $randomchoicestmt->bind_param("iis", $uid, $uid, $date);
         $emptystmt = $mysql->prepare("SELECT COUNT(*) AS `choiceCount` FROM `choices` WHERE `userId` = ? AND `date` BETWEEN ? AND ?");
         $emptystmt->bind_param("iss", $uid, $from, $to);
         $stats = [0,0]; //[felhasználók száma, igénylések száma]
