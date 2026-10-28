@@ -66,6 +66,7 @@ if (isset($_GET["from"]) && isset($_GET["to"])) {
         $stmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `menuId` = ?");
         $stmt->bind_param("isii", $_SESSION["userId"], $date, $menuId, $menuId);
         $dietstmt->bind_param("isi", $_SESSION["userId"], $date, $menuId);
+        $days = 0;
         foreach ($array as $entry) {
             if (in_array($entry["date"], $dates)) {
                 $date = $entry["date"];
@@ -82,12 +83,14 @@ if (isset($_GET["from"]) && isset($_GET["to"])) {
                     $allowedtoeat = $dietstmt->get_result()->fetch_row()[0];
                     if ($allowedtoeat) {
                         $stmt->execute();
+                        $days++;
                     }
                 }
             }
         }
         $mysql->commit();
         Message::addMessage("Sikeres importálás!", MessageType::success);
+        Message::addMessage("$days napot érintett az importálás.", MessageType::info);
         echo $twig->render("forms.share.choices.html.twig");
     } catch (Exception|Throwable $e) {
         $mysql->rollback();
