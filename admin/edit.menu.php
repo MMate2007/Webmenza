@@ -29,7 +29,7 @@ if (isset($_POST["menu"])) {
     Message::addMessage("Legalább egy étrendet ki kell jelölni!", MessageType::danger);
     }
 }
-$stmt = $mysql->prepare("SELECT `description`, JSON_ARRAYAGG(`menudiets`.`dietId`) AS `dietIds` FROM `menu` INNER JOIN `menudiets` ON `menu`.`date` = `menudiets`.`menuDate` AND `menu`.`id` = `menudiets`.`menuId` WHERE `date` = ? AND `id` = ? GROUP BY `menu`.`date`, `menu`.`id`");
+$stmt = $mysql->prepare("SELECT `description`, JSON_ARRAYAGG(`menudiets`.`dietId`) AS `dietIds` FROM `menu` LEFT JOIN `menudiets` ON `menu`.`date` = `menudiets`.`menuDate` AND `menu`.`id` = `menudiets`.`menuId` WHERE `date` = ? AND `id` = ? GROUP BY `menu`.`date`, `menu`.`id`");
 $stmt->bind_param("si", $_GET["date"], $_GET["id"]);
 $stmt->execute();
 $menu = $stmt->get_result()->fetch_row();
