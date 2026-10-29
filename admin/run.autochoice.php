@@ -4,7 +4,7 @@ authUser(1);
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
 if (isset($_POST["from"]) && isset($_POST["to"])) {
-    $usersres = $mysql->query("SELECT `users`.`id` FROM `users` LEFT JOIN `groups` ON `groupId` = `groups`.`id` WHERE `registered` = 1 AND `groups`.`name` NOT LIKE '\_%'");
+    $usersres = $mysql->query("SELECT `users`.`id` FROM `users` LEFT JOIN `groups` ON `groupId` = `groups`.`id` WHERE `registered` = 1 AND (`groups`.`name` NOT LIKE '\_%' OR `groupId` IS NULL)");
     $users = array_column($usersres->fetch_all(MYSQLI_ASSOC),"id");
     if (isset($_POST["preview"])) {
         $userIds = $users;
@@ -40,8 +40,8 @@ if (isset($_POST["from"]) && isset($_POST["to"])) {
         $mysql->begin_transaction();
         $nullstmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) VALUES (?,?,NULL) ON DUPLICATE KEY UPDATE `userId`=`userId`");
         $nullstmt->bind_param("is", $uid, $date);
-        $randomchoicestmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) SELECT ?, `menu`.`date`, `id` FROM `menu` WHERE `menu`.`date` = ? ORDER BY RAND() LIMIT 1 ON DUPLICATE KEY UPDATE `userId`=`userId`");
-        $randomchoicestmt->bind_param("is", $uid, $date);
+        $randomchoicestmt = $mysql->prepare("INSERT INTO `choices`(`userId`, `date`, `menuId`) SELECT ?, `menu`.`date`, `menu`.`id` FROM `menudiets` INNER JOIN `menu` ON `menudiets`.`menuDate` = `menu`.`date` AND `menudiets`.`menuId` = `menu`.`id` WHERE `menudiets`.`dietId` IN (SELECT `users`.`dietId` FROM `users` WHERE `users`.`id` = ?) AND `menu`.`date` = ? ORDER BY RAND() LIMIT 1 ON DUPLICATE KEY UPDATE `userId`=`userId`");
+        $randomchoicestmt->bind_param("iis", $uid, $uid, $date);
         $emptystmt = $mysql->prepare("SELECT COUNT(*) AS `choiceCount` FROM `choices` WHERE `userId` = ? AND `date` BETWEEN ? AND ?");
         $emptystmt->bind_param("iss", $uid, $from, $to);
         $stats = [0,0]; //[felhasználók száma, igénylések száma]
@@ -88,7 +88,7 @@ if (isset($_POST["from"]) && isset($_POST["to"])) {
         while ($daterow = $datesresult->fetch_array()) {
             $dates[] = date_create($daterow[0]);
         }
-        $userstmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
+        $userstmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` <=> ? ORDER BY `name`");
         $userstmt->bind_param("i", $groupid);
         $choicestmt = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `userId` = ? AND `date` = ?");
         $choicestmt->bind_param("is", $userid, $sqldate);

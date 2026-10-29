@@ -11,6 +11,7 @@
 {% block content %}
 <a href="edit.user.php?id={{ user[0] }}" class="btn btn-primary" role="button"><i class="bi bi-person-fill-gear"></i> Szerkesztés</a>
 <a href="delete.user.php?id={{ user[0] }}" class="btn btn-danger" role="button"><i class="bi bi-person-x-fill"></i> Felhasználó törlése</a>
+<p>Étrend: <a href="view.diet.php?id={{user[4]}}">{{ user[5] }}</a></p>
 <h2>Étkezések</h2>
 <div class="table-responsive">
     <table class="table">

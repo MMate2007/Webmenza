@@ -9,5 +9,22 @@
 {% endblock headtitle %}
 
 {% block content %}
-{% include "_importfile.html.twig" %}
+<form method="post" action="#" enctype="multipart/form-data">
+    <div class="mb-3 row">
+        <label for="spreadsheet" class="form-label col-sm-2">Fájl:</label>
+        <input type="file" name="spreadsheet" id="spreadsheet" class="form-control col" required>
+    </div>
+    <div class="mb-3 row">
+        <label for="diets" class="form-label col-sm-2">Étrend:</label>
+        <div id="diets" class="col">
+            {% for diet in diets %}
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="diets[]" id="diet{{diet['id']}}" value="{{diet['id']}}" class="form-check-input">
+                <label for="diet{{diet['id']}}" class="form-check-label">{{diet['name']}}</label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-down"></i> Importálás</button>
+</form>
 {% endblock content %}

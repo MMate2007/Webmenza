@@ -19,7 +19,7 @@
 <h2>Statisztika</h2>
 <p>
     Menüvel rendelkező napok: {{ days }} db<br>
-    Kitöltöttség aránya: {{ choices }}/{{ users * days }} ({{ (choices / ((users ? users : 1) * (days ? days : 1)) * 100)|round }}%)
+    Kitöltöttség aránya: {{ choices }}/{{ expectedchoices }} ({{ (choices / (expectedchoices ? expectedchoices : 1) * 100)|round }}%)
 </p>
 <h2>Csoportstatisztika</h2>
 <div class="table-responsive">
@@ -35,7 +35,7 @@
             <tr>
                 <td>{{ group.groupName }}</td>
                 <td>
-                    {{ (group.choicesCount / ((group.groupMembersCount ? group.groupMembersCount : 1) * (days ? days : 1)) * 100)|round }}% ({{ group.choicesCount }}/{{ group.groupMembersCount * days }})
+                    {{ (group.choicesCount / (group.groupExpectedChoicesCount ? group.groupExpectedChoicesCount : 1) * 100)|round }}% ({{ group.choicesCount }}/{{ group.groupExpectedChoicesCount }})
                 </td>
             </tr>
             {% endfor %}

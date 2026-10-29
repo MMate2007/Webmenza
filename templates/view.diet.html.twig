@@ -1,0 +1,37 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    {{ dietname|e }} étrend - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    {{ dietname|e }} étrend
+{% endblock headtitle %}
+
+{% block content %}
+<div class="d-flex justify-content-sm-between flex-wrap">
+    <div>
+        <a href="edit.diet.php?id={{ dietId }}" class="btn btn-primary" role="button"><i class="bi bi-pencil-square"></i> Szerkesztés</a>
+        <a href="delete.diet.php?id={{ dietId }}" class="btn btn-danger" role="button"><i class="bi bi-trash3"></i> Törlés</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Név</th>
+                <th>Csoport</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><a href="view.user.php?id={{ user[0] }}">{{ user[1] }}</a>{% if user[2] == 0 %} (nem regisztrált){% endif %}</td>
+                <td><a href="view.group.php?id={{ user['groupId'] }}">{{ user[4] }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

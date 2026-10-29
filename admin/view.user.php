@@ -3,7 +3,7 @@ require_once "../config.php";
 authUser(1);
 $mysql = new mysqli($dbcred["host"], $dbcred["username"], $dbcred["password"], $dbcred["db"]);
 $mysql->query("SET NAMES utf8");
-$stmt = $mysql->prepare("SELECT `users`.`id`, `users`.`name`, `groups`.`name`, `groupId` FROM `users` LEFT JOIN `groups` ON `users`.`groupId` = `groups`.`id` WHERE `users`.`id` = ?");
+$stmt = $mysql->prepare("SELECT `users`.`id`, `users`.`name`, `groups`.`name`, `groupId`, `dietId`, `diets`.`name` FROM `users` LEFT JOIN `groups` ON `users`.`groupId` = `groups`.`id` INNER JOIN `diets` ON `users`.`dietId` = `diets`.`id` WHERE `users`.`id` = ?");
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $userdata = $stmt->get_result()->fetch_row();
