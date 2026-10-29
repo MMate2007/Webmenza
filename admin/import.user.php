@@ -39,15 +39,15 @@ if (isset($_FILES["spreadsheet"])) {
             $groups[$id] = $row[1];
             }
         }
-        $dietid = array_search($row[3], $diets);
+        $dietid = array_search($row[2], $diets);
         if (!$dietid) {
-            $dietname = $row[3];
+            $dietname = $row[2];
             $dietstmt->execute();
             $dietid = $mysql->insert_id;
-            $diets[$dietid] = $row[3];
+            $diets[$dietid] = $row[2];
         }
         $name = $row[0];
-        $password = password_hash($row[2], PASSWORD_DEFAULT);
+        $password = password_hash($row[3], PASSWORD_DEFAULT);
         $userstmt->execute();
     }
     $mysql->commit();
