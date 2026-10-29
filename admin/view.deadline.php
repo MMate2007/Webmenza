@@ -11,7 +11,7 @@ $stmt = $mysql->prepare("SELECT COUNT(DISTINCT `date`) FROM `menu` INNER JOIN `d
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $days = $stmt->get_result()->fetch_row()[0];
-$users = $mysql->query("SELECT COUNT(*) FROM `users` LEFT JOIN `groups` ON `groupId` = `groups`.`id` WHERE `registered` = 1 AND `groups`.`name` NOT LIKE '\_%'")->fetch_row()[0];
+$users = $mysql->query("SELECT COUNT(*) FROM `users` LEFT JOIN `groups` ON `groupId` = `groups`.`id` WHERE `registered` = 1 AND (`groups`.`name` NOT LIKE '\_%' OR `groupId` IS NULL)")->fetch_row()[0];
 $stmt = $mysql->prepare("SELECT COUNT(*) FROM `choices` INNER JOIN `deadlines` ON `date` BETWEEN `from` AND `to` WHERE `id` = ?");
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
