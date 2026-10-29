@@ -1,0 +1,71 @@
+{% extends "adminbase.html.twig" %}
+
+{% block title %}
+    Menü tömeges hozzáadása - Webmenza
+{% endblock title %}
+
+{% block headtitle %}
+    Menü tömeges hozzáadása
+{% endblock headtitle %}
+
+{% block content %}
+<form method="post" action="#">
+    <div class="mb-3 row">
+        <label for="start" class="form-label col-sm-2">Első nap:</label>
+        <input type="date" name="start" id="start" class="form-control col" required>
+    </div>
+    <div class="mb-3 row">
+        <label for="end" class="form-label col-sm-2">Utolsó nap:</label>
+        <input type="date" name="end" id="end" class="form-control col" required>
+    </div>
+    <div class="mb-3 row">
+        <label for="days" class="form-label col-sm-2">Napok:</label>
+        <div id="days" class="col">
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day1" value="1" class="form-check-input" checked>
+                <label for="day1" class="form-check-label">Hétfő</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day2" value="2" class="form-check-input" checked>
+                <label for="day2" class="form-check-label">Kedd</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day3" value="3" class="form-check-input" checked>
+                <label for="day3" class="form-check-label">Szerda</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day4" value="4" class="form-check-input" checked>
+                <label for="day4" class="form-check-label">Csütörtök</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day5" value="5" class="form-check-input" checked>
+                <label for="day5" class="form-check-label">Péntek</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day6" value="6" class="form-check-input" checked>
+                <label for="day6" class="form-check-label">Szombat</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="days[]" id="day7" value="7" class="form-check-input" checked>
+                <label for="day7" class="form-check-label">Vasárnap</label>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label for="menu" class="form-label col-sm-2">Menü:</label>
+        <textarea name="menu" id="menu" required class="form-control col"></textarea>
+    </div>
+    <div class="mb-3 row">
+        <label for="diets" class="form-label col-sm-2">Étrend:</label>
+        <div id="diets" class="col">
+            {% for diet in diets %}
+            <div class="form-check form-check-inline">
+                <input type="checkbox" name="diets[]" id="diet{{diet['id']}}" value="{{diet['id']}}" class="form-check-input">
+                <label for="diet{{diet['id']}}" class="form-check-label">{{diet['name']}}</label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Mentés</button>
+</form>
+{% endblock content %}
