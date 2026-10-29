@@ -15,7 +15,7 @@ $dates = [];
 while ($daterow = $datesresult->fetch_array()) {
     $dates[] = date_create($daterow[0]);
 }
-$userstmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
+$userstmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` <=> ? ORDER BY `name`");
 $userstmt->bind_param("i", $groupid);
 $choicestmt = $mysql->prepare("SELECT `menuId` FROM `choices` WHERE `userId` = ? AND `date` = ?");
 $choicestmt->bind_param("is", $userid, $sqldate);
