@@ -165,32 +165,32 @@ function authUser(int $adminLevel = 0, bool $allownonregistered = false): void {
     deletePastData();
     if (!isset($_SESSION["userId"])) {
         $_SESSION["messages"][] = new Message("A tartalom megtekintéséhez azonosítás szükséges.", MessageType::danger);
-        header("Location: login.php");
+        header("Location: /login.php");
         exit;
         return;
     }
     if ($adminLevel != 0 && !isset($_SESSION["admin"])) {
         $_SESSION["messages"][] = new Message("A tartalom megtekintéséhez ügyintézői vagy adminisztrátori jogosultság szükséges.", MessageType::danger);
-        header("Location: login.php");
+        header("Location: /login.php");
         exit;
         return;
     }
     if ($adminLevel == 2 && $_SESSION["admin"] < 2) {
         $_SESSION["messages"][] = new Message("A tartalom megtekintéséhez adminisztrátori jogosultság szükséges.", MessageType::danger);
-        header("Location: login.php");
+        header("Location: /login.php");
         exit;
         return;
     }
     if ($adminLevel == 1 && $_SESSION["admin"] < 1) {
         $_SESSION["messages"][] = new Message("A tartalom megtekintéséhez legalább ügyintézői jogosultság szükséges.", MessageType::danger);
-        header("Location: login.php");
+        header("Location: /login.php");
         exit;
         return;
     }
     if (isset($_SESSION["registered"])) {
     if ($_SESSION["registered"] == false && $allownonregistered == false) {
         Message::addMessage("Első belépésnél a jelszóváltoztatás köztelező! Kérjük, hogy változtassa meg jelszavát!", MessageType::warning, false);
-        header("Location: modify.password.php");
+        header("Location: /modify.password.php");
         exit;
     } }
 }
