@@ -33,14 +33,14 @@
         <thead>
             <tr>
                 <th>Név</th>
-                <th>Műveletek</th>
+                <th>Étrend</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr>
                 <td><a href="view.user.php?id={{ user[0] }}">{{ user[1] }}</a>{% if user[2] == 0 %} (nem regisztrált){% endif %}</td>
-                <td></td>
+                <td>{{ user[3] }}</td>
             </tr>
             {% endfor %}
         </tbody>

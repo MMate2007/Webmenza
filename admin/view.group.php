@@ -7,7 +7,7 @@ $stmt = $mysql->prepare("SELECT `name` FROM `groups` WHERE `id` = ?");
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $groupname = $stmt->get_result()->fetch_row()[0];
-$stmt = $mysql->prepare("SELECT `id`, `name`, `registered` FROM `users` WHERE `groupId` = ? ORDER BY `name`");
+$stmt = $mysql->prepare("SELECT `users`.`id`, `users`.`name`, `registered`, `diets`.`name` FROM `users` INNER JOIN `diets` ON `users`.`dietId` = `diets`.`id` WHERE `groupId` = ? ORDER BY `users`.`name`");
 $stmt->bind_param("i", $_GET["id"]);
 $stmt->execute();
 $result = $stmt->get_result();

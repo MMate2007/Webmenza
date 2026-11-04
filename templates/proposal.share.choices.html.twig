@@ -28,13 +28,18 @@
             <tbody>
                 {% for date, menu in proposal %}
                     <tr>
-                        <td><input type="checkbox" name="dates[]" id="date{{date}}" class="form-check-input" value="{{date}}" {{ menu[1] ? "" : "checked" }}></td>
+                        <td><input type="checkbox" name="dates[]" id="date{{date}}" class="form-check-input" value="{{date}}" {{ (menu[1] or (menu[2] is not null)) ? "" : "checked" }} {{ menu[2] ? "disabled" }}></td>
                         <td>{{date|date("Y. m. d.")}}</td>
                         <td>
                             {% if menu[1] %}
                                 <p><s>{{menu[1]}}</s></p>
                             {% endif %}
                             <p>{{menu[0]}}</p>
+                            {% if menu[2] %}
+                            <div class="alert alert-warning" role="alert">
+                                <span>{{ menu[2] }}</span>
+                            </div>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
